@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -49,5 +50,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
-}
 
+    // 댓글 리스트 추가
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostComment> comments;
+}
