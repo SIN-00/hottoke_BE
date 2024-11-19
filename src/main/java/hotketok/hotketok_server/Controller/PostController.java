@@ -44,4 +44,13 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    // 게시물 삭제
+    @DeleteMapping("/post")
+    public ResponseEntity<Map<String, String>> deletePost(@RequestParam("post_id") Long postId) {
+        boolean isDeleted = postService.deletePost(postId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
 }

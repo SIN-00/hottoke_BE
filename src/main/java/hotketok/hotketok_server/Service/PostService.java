@@ -106,6 +106,15 @@ public class PostService {
         return true;
     }
 
+    // 게시물 삭제
+    public boolean deletePost(Long postId)  {
+        if (postRepository.existsById(postId)) {
+            postRepository.deleteById(postId);
+            return true;
+        }
+        return false; // 게시글이 존재하지 않는 경우
+    }
+
     // 오늘 날짜 설정
     private LocalDate getCurrentDate() {
         return LocalDate.now(ZoneId.of("Asia/Seoul"));
