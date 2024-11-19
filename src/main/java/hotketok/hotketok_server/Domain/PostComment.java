@@ -13,38 +13,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Communication {
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long commentId;
+
+    @ManyToOne
+    @JoinColumn(name = "postId", nullable = false)
+    private Post post;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-
-    @Column(nullable = false)
-    private String tag;
-
-    @Column
-    private String image;
-
-    @Column(nullable = false)
-    private Boolean anonymity;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @Column
-    private Integer likeCount;
-
-    @ManyToOne
-    @JoinColumn(name = "houseId", nullable = false)
-    private House house;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
