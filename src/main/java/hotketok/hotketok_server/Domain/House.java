@@ -11,14 +11,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class House {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long houseId;
 
     @Column(nullable = false)
-    private String role;
+    private String houseAddress;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column
+    private String unitCode;
+
+    @Column
+    private Double monthlyRent;
+
+    @Column
+    private Double maintenanceCost;
 }
+
