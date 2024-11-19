@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommunicationComment {
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "postId", nullable = false)
-    private Communication post;
+    private Post post;
 
     @Column(nullable = false)
     private String content;
