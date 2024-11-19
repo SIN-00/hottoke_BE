@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,16 +27,17 @@ public class PostService {
     private final HouseService houseService;
     private final UserService userService;
 
+    // 게시물 생성
     public void createPost(PostRequest postRequest) {
         House currentHouse = houseService.getCurrentHouse();
         User currentUser = userService.getCurrentUser();
 
         Post post = Post.builder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .tag(postRequest.getTag())
-                .image(postRequest.getImage())
-                .anonymity(postRequest.isAnonymity())
+                .title(postRequest.getTitle() != null ? postRequest.getTitle() : "기본 제목")
+                .content(postRequest.getContent() != null ? postRequest.getContent() : "기본 내용")
+                .tag(postRequest.getTag() != null ? postRequest.getTag() : "기본 태그")
+                .image(postRequest.getImage()) // null 허용
+                .anonymity(postRequest.getAnonymity() != null ? postRequest.getAnonymity() : false)
                 .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .updatedAt(LocalDateTime.of(2024, 1, 1, 0, 0, 0))
                 .house(currentHouse)
@@ -45,6 +47,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    // 게시물 조회
     public Map<String, Map<String, Object>> getPostsByHouse() {
         House currentHouse = houseService.getCurrentHouse();
 
@@ -66,6 +69,41 @@ public class PostService {
                             return result;
                         }
                 ));
+    }
+
+    // 게시물 수정
+    public boolean updatePost(PostRequest postRequest) {
+
+        // post_id를 기준으로 정보 찾음
+        Optional<Post> optionalPost = postRepository.findById(postRequest.getPostId());
+        if (optionalPost.isEmpty()) {
+            return false; // 게시글이 없으면 수정 불가
+        }
+
+        Post post = optionalPost.get();
+
+        // request에 있는 것만 수정
+        if (postRequest.getTitle() != null) {
+            post.setTitle(postRequest.getTitle());
+        }
+        if (postRequest.getContent() != null) {
+            post.setContent(postRequest.getContent());
+        }
+        if (postRequest.getTag() != null) {
+            post.setTag(postRequest.getTag());
+        }
+        if (postRequest.getImage() != null) {
+            post.setImage(postRequest.getImage());
+        }
+        if (postRequest.getAnonymity() != null) {
+            post.setAnonymity(postRequest.getAnonymity());
+        }
+
+        // updated_at 설정
+        post.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+
+        postRepository.save(post);
+        return true;
     }
 
     // 오늘 날짜 설정

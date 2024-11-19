@@ -4,10 +4,7 @@ import hotketok.hotketok_server.DTO.PostRequest;
 import hotketok.hotketok_server.Service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,4 +33,15 @@ public class PostController {
         Map<String, Map<String, Object>> posts = postService.getPostsByHouse();
         return ResponseEntity.ok(posts);
     }
+
+    // 게시물 수정
+    @PatchMapping("/post")
+    public ResponseEntity<Map<String, String>> updatePost(@RequestBody PostRequest postRequest) {
+        boolean isUpdated = postService.updatePost(postRequest);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
+
 }
