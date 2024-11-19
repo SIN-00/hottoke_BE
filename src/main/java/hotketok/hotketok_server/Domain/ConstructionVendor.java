@@ -11,14 +11,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class ConstructionVendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long vendorId;
 
     @Column(nullable = false)
-    private String role;
+    private String vendorName;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column
+    private String category;
+
+    @Column
+    private String callNumber;
+
+    @Column
+    private String vendorAddress;
+
+    @Column
+    private String notice;
+
+    @Column
+    private String news;
+
+    @Column
+    private Double rate;
 }
