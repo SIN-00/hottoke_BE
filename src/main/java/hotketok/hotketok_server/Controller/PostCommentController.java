@@ -43,6 +43,21 @@ public class PostCommentController {
         String content = requestBody.get("content").toString();
 
         boolean updateResult = postCommentService.updateComment(postId, commentId, content);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
+
+    // 게시물 댓글 삭제
+    @DeleteMapping("/post/comment")
+    public ResponseEntity<Map<String, String>> deleteComment(@RequestBody Map<String, Object> requestBody) {
+
+        Long postId = Long.valueOf(requestBody.get("post_id").toString());
+        Long commentId = Long.valueOf(requestBody.get("comment_id").toString());
+
+        boolean deleteResult = postCommentService.deleteComment(postId, commentId);
+
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         return ResponseEntity.ok(response);

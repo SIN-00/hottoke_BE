@@ -89,4 +89,26 @@ public class PostCommentService {
 
         return true;
     }
+
+    // 댓글 삭제
+    public boolean deleteComment(Long postId, Long commentId) {
+
+        if(!postRepository.existsById(postId)) {
+            throw new IllegalArgumentException("Post not found with Id");
+        }
+
+        PostComment comment = postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found with Id"));
+
+
+        // 댓글과 게시글의 연관성 확인
+        if (!comment.getPost().getPostId().equals(postId)) {
+            throw new IllegalArgumentException("Comment does not belong to post");
+        }
+
+        // 댓글 삭제
+        postCommentRepository.delete(comment);
+
+        return true;
+    }
 }
