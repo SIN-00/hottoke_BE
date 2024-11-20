@@ -14,17 +14,18 @@ import lombok.NoArgsConstructor;
 public class HouseUserMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "house_user_mapping_id")
     private Long houseUserMappingId;
 
     @ManyToOne
-    @JoinColumn(name = "houseId", nullable = false)
+    @JoinColumn(name = "house_id", nullable = false)
     private House house;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column
+    @Column(name = "unit_number")
     private Integer unitNumber;
 }
 
