@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,27 @@ public class ServiceRequestService {
         serviceRequestRepository.save(request);
     }
 
+    // 요청서 조회
+    public Map<String, Map<String, Object>> getRequests() {
+
+        HouseUserMapping currentHouseUser = houseUserMappingService.getCurrentHouseUser();
+
+        return serviceRequestRepository.findByHouseUserMapping(currentHouseUser).stream()
+                .collect(Collectors.toMap(
+                        serviceRequest -> String.valueOf(serviceRequest.getRequestId()),
+                        serviceRequest -> { // Value: 요청서 데이터를 Map으로 변환
+                            Map<String, Object> result = new HashMap<>();
+                            result.put("request_schedule", serviceRequest.getConstructionDate());
+                            result.put("request_image", serviceRequest.getRequestImage());
+                            result.put("description", serviceRequest.getRequestDescription());
+                            result.put("additional_request", serviceRequest.getAddRequest());
+                            result.put("status", serviceRequest.getRequestStatus());
+                            result.put("created_at", serviceRequest.getCreatedAt());
+                            result.put("parking", serviceRequest.getParking());
+                            return result;
+
+                        }
+                ));
+    }
 
 }

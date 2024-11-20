@@ -4,6 +4,7 @@ import hotketok.hotketok_server.Domain.ServiceRequest;
 import hotketok.hotketok_server.Service.ServiceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,7 @@ public class ServiceRequestController {
     private final ServiceRequestService serviceRequestService;
 
     // 수리/공사 요청서 작성
-    @PostMapping("service")
+    @PostMapping("/service")
     public ResponseEntity<Map<String, String>> createRequest(@RequestBody ServiceRequest serviceRequest) {
 
         serviceRequestService.createRequest(serviceRequest);
@@ -26,5 +27,13 @@ public class ServiceRequestController {
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         return ResponseEntity.ok(response);
+    }
+
+    // 수리/공사 요청서 조회
+    @GetMapping("/service")
+    public ResponseEntity<Map<String, Map<String, Object>>> getRequests() {
+
+        Map<String, Map<String, Object>> requests = serviceRequestService.getRequests();
+        return ResponseEntity.ok(requests);
     }
 }
