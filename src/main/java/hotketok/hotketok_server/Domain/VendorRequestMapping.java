@@ -18,7 +18,7 @@ public class VendorRequestMapping {
 
     @ManyToOne
     @JoinColumn(name = "requestId", nullable = false)
-    private Request request;
+    private ServiceRequest request;
 
     @ManyToOne
     @JoinColumn(name = "vendorId", nullable = false)
