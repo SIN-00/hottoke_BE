@@ -33,4 +33,18 @@ public class PostCommentController {
         Map<String, Object> response = postCommentService.getCommentsByPostId(postId);
         return ResponseEntity.ok(response);
     }
+
+    // 게시물 댓글 수정
+    @PatchMapping("/post/comment")
+    public ResponseEntity<Map<String, String>> updateComment(@RequestBody Map<String, Object> requestBody) {
+
+        Long postId = Long.valueOf(requestBody.get("post_id").toString());
+        Long commentId = Long.valueOf((requestBody.get("comment_id").toString()));
+        String content = requestBody.get("content").toString();
+
+        boolean updateResult = postCommentService.updateComment(postId, commentId, content);
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
 }
