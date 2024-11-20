@@ -4,9 +4,7 @@ import hotketok.hotketok_server.DTO.PostCommentRequest;
 import hotketok.hotketok_server.Service.PostCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +23,14 @@ public class PostCommentController {
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
+
+    // 게시물 댓글 조회
+    @GetMapping("/post/comment")
+    public ResponseEntity<Map<String, Object>> getCommentsByPostId(@RequestParam("post_id") Long postId) {
+
+        Map<String, Object> response = postCommentService.getCommentsByPostId(postId);
         return ResponseEntity.ok(response);
     }
 }
