@@ -28,4 +28,7 @@ public class User {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "profile_image")
+    private Long profile_image;
 }
