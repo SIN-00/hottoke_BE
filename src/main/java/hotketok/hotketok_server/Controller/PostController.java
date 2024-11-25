@@ -1,6 +1,7 @@
 package hotketok.hotketok_server.Controller;
 
 import hotketok.hotketok_server.DTO.PostRequest;
+import hotketok.hotketok_server.Domain.User;
 import hotketok.hotketok_server.Service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class PostController {
     // 게시글 작성
     @PostMapping("/post")
     public ResponseEntity<Map<String, String>> createPost(@RequestBody PostRequest postRequest) {
+        User user = userDetails.getUser();
 
         postService.createPost(postRequest);
 

@@ -41,6 +41,6 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "receiverId", nullable = false)
-    private User receiverer;
+    private User receiver;
 
 }
