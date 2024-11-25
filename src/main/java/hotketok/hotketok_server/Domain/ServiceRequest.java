@@ -31,9 +31,6 @@ public class ServiceRequest {
     private Boolean parking;
 
     @Column
-    private Boolean addRequest;
-
-    @Column
     private String requestStatus;
 
     @ManyToOne
