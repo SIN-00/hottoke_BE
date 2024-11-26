@@ -28,23 +28,21 @@ public class PostService {
     private final UserService userService;
 
     // 게시물 생성
-    public void createPost(PostRequest postRequest, User user) {
+    public void createPost(PostRequest postRequest, Long userId) {
         House currentHouse = houseService.getCurrentHouse();
-        User currentUser = userService.getCurrentUser();
 
         Post post = Post.builder()
                 .content(postRequest.getContent() != null ? postRequest.getContent() : "기본 내용")
                 .tag(postRequest.getTag() != null ? postRequest.getTag() : "기본 태그")
                 .anonymity(postRequest.getAnonymity() != null ? postRequest.getAnonymity() : false)
                 .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-                .house(currentHouse)
                 .build();
 
         postRepository.save(post);
     }
 
     // 게시물 조회
-    public Map<String, Map<String, Object>> getPostsByHouse(User user) {
+    public Map<String, Map<String, Object>> getPostsByHouse(Long user_id) {
         House currentHouse = houseService.getCurrentHouse();
 
         return postRepository.findByHouse(currentHouse).stream()
@@ -62,7 +60,7 @@ public class PostService {
     }
 
     // 게시물 수정
-    public boolean updatePost(PostRequest postRequest, User user) {
+    public boolean updatePost(PostRequest postRequest, Long user_id) {
 
         // post_id를 기준으로 정보 찾음
         Optional<Post> optionalPost = postRepository.findById(postRequest.getPostId());
@@ -88,7 +86,7 @@ public class PostService {
     }
 
     // 게시물 삭제
-    public boolean deletePost(Long postId, User user)  {
+    public boolean deletePost(Long postId, Long user_id)  {
         if (postRepository.existsById(postId)) {
             postRepository.deleteById(postId);
             return true;

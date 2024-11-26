@@ -19,6 +19,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private User receiver;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -30,17 +38,5 @@ public class Post {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "houseId", nullable = false)
-    private House house;
-
-    @ManyToOne
-    @JoinColumn(name = "senderId", nullable = false)
-    private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "receiverId", nullable = false)
-    private User receiver;
-
 }
+
