@@ -20,7 +20,7 @@ public class ServiceRequestService {
     private final HouseUserMappingService houseUserMappingService;
 
     // 요청서 작성
-    public void createRequest(ServiceRequest serviceRequest) {
+    public void createRequest(ServiceRequest serviceRequest, Long user_id) {
 
         HouseUserMapping currentHouseUser = houseUserMappingService.getCurrentHouseUser();
 

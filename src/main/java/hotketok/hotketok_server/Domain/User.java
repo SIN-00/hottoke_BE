@@ -18,9 +18,12 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
+    private String username;
+
+    private String loginId;
+
     private String role;
 
-    @Column(nullable = false, unique = true)
     private String email;
 
     @Column
