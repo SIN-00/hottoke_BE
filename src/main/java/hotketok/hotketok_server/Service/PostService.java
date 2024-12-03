@@ -26,20 +26,27 @@ public class PostService {
     private final PostRepository postRepository;
     private final HouseService houseService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     // 게시물 생성
-    public void createPost(PostRequest postRequest, Long userId) {
-        House currentHouse = houseService.getCurrentHouse();
+//    public void createPost(Long receiverId, Long senderId, String content, String tag, Boolean anonymity) {
+//        User receiver = userRepository.findById(receiverId)
+//                .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+//        User sender = userRepository.findById(senderId)
+//                .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+//
+//        Post post = Post.builder()
+//                .receiver(receiver)
+//                .sender(sender)
+//                .content(content)
+//                .tag(tag)
+//                .anonymity(anonymity)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//
+//        postRepository.save(post);
+//    }
 
-        Post post = Post.builder()
-                .content(postRequest.getContent() != null ? postRequest.getContent() : "기본 내용")
-                .tag(postRequest.getTag() != null ? postRequest.getTag() : "기본 태그")
-                .anonymity(postRequest.getAnonymity() != null ? postRequest.getAnonymity() : false)
-                .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-                .build();
-
-        postRepository.save(post);
-    }
 
     // 게시물 조회
     public Map<String, Map<String, Object>> getPostsByHouse(Long user_id) {

@@ -20,16 +20,16 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 작성
-    @PostMapping("/post")
-    public ResponseEntity<Map<String, String>> createPost(@RequestBody PostRequest postRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        Long userId = userDetails.getUser().getUserId();
-        postService.createPost(postRequest, userId);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "success");
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/post")
+//    public ResponseEntity<Map<String, String>> createPost(@RequestBody PostRequest postRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+//
+//        Long userId = userDetails.getUser().getUserId();
+//        postService.createPost(postRequest, userId);
+//
+//        Map<String, String> response = new HashMap<>();
+//        response.put("status", "success");
+//        return ResponseEntity.ok(response);
+//    }
 
     // 게시물 조회
     @GetMapping("/post")
