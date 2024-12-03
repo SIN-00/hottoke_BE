@@ -1,21 +1,41 @@
 package hotketok.hotketok_server.Service;
 
-import hotketok.hotketok_server.Domain.House;
-import hotketok.hotketok_server.Repository.HouseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class HouseService {
-    private final HouseRepository houseRepository;
 
-    @Autowired
-    public HouseService(HouseRepository houseRepository) {
-        this.houseRepository = houseRepository;
+    @Value("${juso.api.url}") // API URL
+    private String apiUrl;
+
+    @Value("${juso.api.key}") // API Key
+    private String apiKey;
+
+    private final RestTemplate restTemplate;
+
+    public HouseService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public House getCurrentHouse() {  // 현재 mock 데이터 반환
-        return houseRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Mock house not found")); // mock 데이터 없어진 경우 예외 처리
+    public String getRawJsonResponse(String keyword) {
+        try {
+            // 키워드 인코딩
+            //String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+            String url = String.format("%s?confmKey=%s&keyword=%s&resultType=json", apiUrl, apiKey, keyword);
+
+            // HTTP 요청 및 응답 받기
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+            // JSON 문자열 반환
+            return response.getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("주소 검색 중 오류 발생", e);
+        }
     }
 }

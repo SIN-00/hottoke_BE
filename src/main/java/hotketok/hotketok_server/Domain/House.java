@@ -17,7 +17,7 @@ public class House {
     @Column(name = "house_id")
     private Long houseId;
 
-    @Column(name = "house_address", nullable = false)
+    @Column(name = "house_address")
     private String houseAddress;
 
     @Column(name = "unit_code")
