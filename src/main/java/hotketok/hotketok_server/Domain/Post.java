@@ -19,17 +19,11 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @Column(nullable = false)
-    private String title;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
     private String tag;
-
-    @Column
-    private String image;
 
     @Column(nullable = false)
     private Boolean anonymity;
@@ -37,21 +31,16 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Column
-    private Integer likeCount;
-
     @ManyToOne
     @JoinColumn(name = "houseId", nullable = false)
     private House house;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @JoinColumn(name = "senderId", nullable = false)
+    private User sender;
 
-    // 댓글 리스트 추가
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostComment> comments;
+    @ManyToOne
+    @JoinColumn(name = "receiverId", nullable = false)
+    private User receiverer;
+
 }

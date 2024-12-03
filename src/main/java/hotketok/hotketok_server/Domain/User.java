@@ -25,4 +25,10 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "profile_image")
+    private Long profile_image;
 }
