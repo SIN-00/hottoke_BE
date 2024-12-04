@@ -20,7 +20,7 @@ public class ServiceRequestService {
     private final HouseUserMappingService houseUserMappingService;
 
     // 요청서 작성
-    public void createRequest(ServiceRequest serviceRequest) {
+    public void createRequest(ServiceRequest serviceRequest, Long user_id) {
 
         HouseUserMapping currentHouseUser = houseUserMappingService.getCurrentHouseUser();
 
@@ -30,7 +30,6 @@ public class ServiceRequestService {
                 .requestDescription(serviceRequest.getRequestDescription())
                 .constructionDate(serviceRequest.getConstructionDate())
                 .parking(serviceRequest.getParking())
-                .addRequest(serviceRequest.getAddRequest())
                 .requestStatus(serviceRequest.getRequestStatus() != null ? serviceRequest.getRequestStatus(): "업체 찾는 중") // 초기 상태 설정
                 .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .build();
@@ -51,7 +50,6 @@ public class ServiceRequestService {
                             result.put("request_schedule", serviceRequest.getConstructionDate());
                             result.put("request_image", serviceRequest.getRequestImage());
                             result.put("description", serviceRequest.getRequestDescription());
-                            result.put("additional_request", serviceRequest.getAddRequest());
                             result.put("status", serviceRequest.getRequestStatus());
                             result.put("created_at", serviceRequest.getCreatedAt());
                             result.put("parking", serviceRequest.getParking());
