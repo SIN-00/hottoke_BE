@@ -26,6 +26,6 @@ public class HouseUserMapping {
     private User user_id;
 
     @Column
-    private Integer unit_number;
+    private String unit_number;
 }
 
