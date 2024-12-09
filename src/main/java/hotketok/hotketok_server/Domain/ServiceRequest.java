@@ -28,15 +28,18 @@ public class ServiceRequest {
     private LocalDateTime constructionDate;
 
     @Column
-    private Boolean parking;
-
-    @Column
     private String requestStatus;
 
     @ManyToOne
     @JoinColumn(name = "houseUserMappingId", nullable = false)
     private HouseUserMapping houseUserMapping;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime createdAt;
+
+    @Column
+    private String category;
+
+    @Column
+    private String status;
 }
