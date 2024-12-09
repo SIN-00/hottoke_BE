@@ -26,4 +26,13 @@ public class VendorRequestMapping {
 
     @Column
     private String status;
+
+    @Column
+    private String estimate_price;
+
+    @Column
+    private String estimate_time;
+
+    @Column
+    private String additional_comment;
 }
