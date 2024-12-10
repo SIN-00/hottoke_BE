@@ -1,10 +1,8 @@
 package hotketok.hotketok_server.Domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Data
@@ -17,11 +15,11 @@ public class VendorRequestMapping {
     private Long vendorRequestMappingId;
 
     @ManyToOne
-    @JoinColumn(name = "requestId", nullable = false)
+    @JoinColumn(name = "request_id", nullable = false)
     private ServiceRequest request;
 
     @ManyToOne
-    @JoinColumn(name = "vendorId", nullable = false)
+    @JoinColumn(name = "vendor_id", nullable = false)
     private ConstructionVendor vendor;
 
     @Column
