@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,9 +38,7 @@ public class ServiceRequestController {
 
     // 요청서 작성
     @PostMapping("/service")
-    public ResponseEntity<Map<String, String>> postServiceRequest(
-            @RequestBody Map<String, Object> requestBody,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> postServiceRequest(@RequestBody Map<String, Object> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByEmail(loginId);
@@ -137,6 +136,13 @@ public class ServiceRequestController {
                 })
                 .toList();
 
+        return ResponseEntity.ok(response);
+    }
+
+    // 수리/공사 요청서 조회
+    @GetMapping("/service-request")
+    public ResponseEntity<Map<String, Object>> getServiceRequestDetails(@RequestParam("request_id") Long requestId) {
+        Map<String, Object> response = serviceRequestService.getServiceRequest(requestId);
         return ResponseEntity.ok(response);
     }
 }

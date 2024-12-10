@@ -8,7 +8,9 @@ import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,4 +44,35 @@ public class ServiceRequestService {
 
         return doneRequests;
     }
+
+    // 수리/공사 요청서 조회
+    public Map<String, Object> getServiceRequest(Long requestId) {
+
+        // 요청서 조회
+        ServiceRequest serviceRequest = serviceRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 요청서를 찾을 수 없습니다."));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("request_id", serviceRequest.getRequestId());
+        response.put("category", serviceRequest.getCategory());
+        response.put("created_at", serviceRequest.getCreatedAt().toString());
+        response.put("address", serviceRequest.getHouseUserMapping().getHouse().getHouseAddress());
+        response.put("request_image", serviceRequest.getRequestImage());
+        response.put("request_description", serviceRequest.getRequestDescription());
+        response.put("status", serviceRequest.getStatus());
+
+        // 스케줄 데이터 추가
+        List<Map<String, Object>> schedules = serviceRequest.getConstructionDates().stream()
+                .map(constructionDate -> {
+                    Map<String, Object> schedule = new HashMap<>();
+                    schedule.put("date", constructionDate.getDate().toString());
+                    schedule.put("times", constructionDate.getTimes());
+                    return schedule;
+                })
+                .toList();
+        response.put("request_schedule", schedules);
+
+        return response;
+    }
+
 }
