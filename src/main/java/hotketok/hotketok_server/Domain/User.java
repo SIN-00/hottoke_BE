@@ -20,11 +20,12 @@ public class User {
 
     private String username;
 
-    @Column(unique = true, nullable = false)
-    private String loginId;
-
     private String role;
 
+    @Column(name = "login_id", nullable = false, unique = true)
+    private String loginId;
+
+    @Column(name = "email")
     private String email;
 
     @Column
