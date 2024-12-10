@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 public class House {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    private Long house_id;
+    @Column(name = "house_id", nullable = false)
+    private Long houseId;
 
     @Column
-    private String house_address;
+    private String houseAddress;
 
     @Column
-    private String unit_code;
+    private String unitCode;
 
     @Column
-    private Double monthly_rent;
+    private Double monthlyRent;
 
     @Column
-    private Double maintenance_cost;
+    private Double maintenanceCost;
 }

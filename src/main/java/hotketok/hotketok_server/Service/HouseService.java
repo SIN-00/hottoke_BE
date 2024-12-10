@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
@@ -46,25 +47,29 @@ public class HouseService {
     }
 
     // 사용자 주소 선택
-    public String selectAddress(String address, String unit_number, User user) {
+    @Transactional
+    public String selectAddress(String address, String unitNumber, User user) {
 
-        // 유저의 [하우스유저매핑] 레코드 조회
-        HouseUserMapping houseUserMapping = houseUserMappingRepository.findById(user.getLoginId());
+        System.out.println("User: " + user);
+        // 1. 유저의 [하우스유저매핑] 레코드 조회
+        HouseUserMapping houseUserMapping = houseUserMappingRepository
+                .findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보가 없습니다."));
 
-        // [하우스유저매핑] 테이블에 있는 [주택] 연결
-        House house = houseRepository.findByHouseId(houseUserMapping.getHouse_id());
+        // 2. [하우스유저매핑] 테이블의 [주택] 연결
+        House house = houseUserMapping.getHouse();
 
-        // 주소 정보 저장
-        // 1. [하우스유저매핑] 테이블에 해당 유저와 세대 번호 등록
-        houseUserMapping.setUser_id(user);
-        houseUserMapping.setUnit_number(unit_number);
+        // 3. [하우스유저매핑] 테이블에 해당 유저와 세대 번호 등록
+        houseUserMapping.setUnitNumber(unitNumber);
 
-        // 2. [주택] 테이블에 주소 등록
-        house.setHouse_address(address);
+        // 4. [주택] 테이블에 주소 등록
+        house.setHouseAddress(address);
 
         houseUserMappingRepository.save(houseUserMapping);
-        houseRepository.save(house);
 
         return "success";
+
+        // 하우스를 등록하면 해당 유저와 주택을 연결하는 하우스유저매핑 테이블을 생성하는 로직 구현 필요
     }
+
 }

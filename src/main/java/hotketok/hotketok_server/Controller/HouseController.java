@@ -28,7 +28,9 @@ public class HouseController {
     public ResponseEntity<Map<String, String>> selectAddress(@RequestBody Map<String, String> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
+        System.out.println("controller: loginId: " + loginId);
         User user = userRepository.findByLoginId(loginId);
+        System.out.println("controller: user: " + user);
 
         String address = requestBody.get("address");
         String unit_number = requestBody.get("unit_number");

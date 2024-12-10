@@ -28,11 +28,11 @@ public class VendorRequestMapping {
     private String status;
 
     @Column
-    private String estimate_price;
+    private String estimatePrice;
 
     @Column
-    private String estimate_time;
+    private String estimateTime;
 
     @Column
-    private String additional_comment;
+    private String additionalComment;
 }

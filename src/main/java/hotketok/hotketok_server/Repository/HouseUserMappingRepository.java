@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface HouseUserMappingRepository extends JpaRepository<HouseUserMapping, Long> {
 
-    HouseUserMapping findById(String LoginId);
+    Optional<HouseUserMapping> findByHouseUserMappingId(Long houseUserMappingId);
+
+    Optional<HouseUserMapping> findByUser(User user);
 }
