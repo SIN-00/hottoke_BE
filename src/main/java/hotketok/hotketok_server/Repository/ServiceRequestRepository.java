@@ -5,6 +5,7 @@ import hotketok.hotketok_server.Domain.ServiceRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, Long> {
 
@@ -12,4 +13,7 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
 
     // 진행 및 완료된 요청서 조회
     List<ServiceRequest> findByHouseUserMappingAndStatus(HouseUserMapping houseUserMapping, Integer requestStatus);
+
+    // 수리/공사 요청서 조회
+    Optional<ServiceRequest> findByRequestIdAndHouseUserMapping(Long requestId, HouseUserMapping houseUserMapping);
 }

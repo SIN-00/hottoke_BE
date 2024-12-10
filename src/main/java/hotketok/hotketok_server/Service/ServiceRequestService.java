@@ -46,10 +46,14 @@ public class ServiceRequestService {
     }
 
     // 수리/공사 요청서 조회
-    public Map<String, Object> getServiceRequest(Long requestId) {
+    public Map<String, Object> getServiceRequest(Long requestId, User user) {
+
+        // [하우스유저매핑]과 연결
+        HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         // 요청서 조회
-        ServiceRequest serviceRequest = serviceRequestRepository.findById(requestId)
+        ServiceRequest serviceRequest = serviceRequestRepository.findByRequestIdAndHouseUserMapping(requestId, houseUserMapping)
                 .orElseThrow(() -> new IllegalArgumentException("해당 요청서를 찾을 수 없습니다."));
 
         Map<String, Object> response = new HashMap<>();

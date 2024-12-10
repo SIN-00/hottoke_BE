@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -141,8 +138,12 @@ public class ServiceRequestController {
 
     // 수리/공사 요청서 조회
     @GetMapping("/service-request")
-    public ResponseEntity<Map<String, Object>> getServiceRequestDetails(@RequestParam("request_id") Long requestId) {
-        Map<String, Object> response = serviceRequestService.getServiceRequest(requestId);
+    public ResponseEntity<Map<String, Object>> getServiceRequestDetails(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByEmail(loginId);
+
+        Map<String, Object> response = serviceRequestService.getServiceRequest(requestId, user);
         return ResponseEntity.ok(response);
     }
 }
