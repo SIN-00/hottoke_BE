@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,17 @@ public class VendorRequestMappingController {
         User user = userRepository.findByEmail(loginId);
 
         Map<String, Map<String, Object>> response = vendorRequestMappingService.getEstimate(requestId, user);
+        return ResponseEntity.ok(response);
+    }
+
+    // 견적서 선택
+    @PostMapping("/estimate")
+    public ResponseEntity<Map<String, String>> selectEstimate(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        vendorRequestMappingService.selectEstimate(requestId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
         return ResponseEntity.ok(response);
     }
 }
