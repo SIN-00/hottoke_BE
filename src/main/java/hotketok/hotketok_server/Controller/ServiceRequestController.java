@@ -118,4 +118,25 @@ public class ServiceRequestController {
 
         return ResponseEntity.ok(response);
     }
+
+    // 완료된 요청서 조회
+    @GetMapping("/service/done")
+    public ResponseEntity<List<Map<String, Long>>> doneServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByEmail(loginId);
+
+        // 완료된 요청서 가져오기
+        List<ServiceRequest> progressRequests = serviceRequestService.doneServiceRequest(user);
+
+        List<Map<String, Long>> response = progressRequests.stream() // 여러 개 일 수 있음
+                .map(request -> {
+                    Map<String, Long> map = new HashMap<>();
+                    map.put("request_id", request.getRequestId());
+                    return map;
+                })
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -29,4 +29,17 @@ public class ServiceRequestService {
 
         return progressRequests;
     }
+
+    // 완료된 요청서 조회
+    public List<ServiceRequest> doneServiceRequest(User user) {
+
+        // [하우스유저매핑]과 연결
+        HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
+
+        // 해당 [하우스유저매핑]과 연결된 요청서 조회 & 조회된 요청서 중 "처리 완료"인 것 조회 및 반환
+        List<ServiceRequest> doneRequests = serviceRequestRepository.findByHouseUserMappingAndStatus(houseUserMapping, 3);
+
+        return doneRequests;
+    }
 }
