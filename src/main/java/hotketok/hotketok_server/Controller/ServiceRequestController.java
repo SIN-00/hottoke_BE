@@ -138,12 +138,26 @@ public class ServiceRequestController {
 
     // 수리/공사 요청서 조회
     @GetMapping("/service-request")
-    public ResponseEntity<Map<String, Object>> getServiceRequestDetails(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, Object>> getServiceRequest(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByEmail(loginId);
 
         Map<String, Object> response = serviceRequestService.getServiceRequest(requestId, user);
+        return ResponseEntity.ok(response);
+    }
+
+    // 수리/공사 요청서 삭제
+    @DeleteMapping("/service-request")
+    public ResponseEntity<Map<String, String>> deleteRequest(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByEmail(loginId);
+
+        serviceRequestService.deleteServiceRequest(requestId, user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
         return ResponseEntity.ok(response);
     }
 }

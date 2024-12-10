@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +54,7 @@ public class ServiceRequestService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         // 요청서 조회
-        ServiceRequest serviceRequest = serviceRequestRepository.findByRequestIdAndHouseUserMapping(requestId, houseUserMapping)
-                .orElseThrow(() -> new IllegalArgumentException("해당 요청서를 찾을 수 없습니다."));
+        ServiceRequest serviceRequest = serviceRequestRepository.findByRequestIdAndHouseUserMapping(requestId, houseUserMapping);
 
         Map<String, Object> response = new HashMap<>();
         response.put("request_id", serviceRequest.getRequestId());
@@ -79,4 +79,14 @@ public class ServiceRequestService {
         return response;
     }
 
+    // 수리/공사 요청서 삭제
+    public void deleteServiceRequest(Long requestId, User user) {
+
+        // [하우스유저매핑]과 연결
+        HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
+
+        ServiceRequest serviceReqeuest = serviceRequestRepository.findByRequestIdAndHouseUserMapping(requestId, houseUserMapping);
+        serviceRequestRepository.delete(serviceReqeuest);
+    }
 }

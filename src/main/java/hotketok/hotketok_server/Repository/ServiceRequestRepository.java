@@ -15,5 +15,6 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
     List<ServiceRequest> findByHouseUserMappingAndStatus(HouseUserMapping houseUserMapping, Integer requestStatus);
 
     // 수리/공사 요청서 조회
-    Optional<ServiceRequest> findByRequestIdAndHouseUserMapping(Long requestId, HouseUserMapping houseUserMapping);
+    ServiceRequest findByRequestIdAndHouseUserMapping(Long requestId, HouseUserMapping houseUserMapping);
+
 }
