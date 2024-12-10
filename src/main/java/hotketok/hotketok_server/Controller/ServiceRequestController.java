@@ -7,10 +7,12 @@ import hotketok.hotketok_server.Domain.User;
 import hotketok.hotketok_server.Repository.HouseUserMappingRepository;
 import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import hotketok.hotketok_server.Repository.UserRepository;
+import hotketok.hotketok_server.Service.ServiceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,6 +31,7 @@ public class ServiceRequestController {
     private final UserRepository userRepository;
     private final HouseUserMappingRepository houseUserMappingRepository;
     private final ServiceRequestRepository serviceRequestRepository;
+    private final ServiceRequestService serviceRequestService;
 
     // 요청서 작성
     @PostMapping("/service")
@@ -81,5 +84,17 @@ public class ServiceRequestController {
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         return ResponseEntity.ok(response);
+    }
+
+    // 진행중인 요청서 조회
+    @GetMapping("/service/progressing")
+    public ResponseEntity<List<ServiceRequest>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByEmail(loginId);
+
+        List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
+
+        return ResponseEntity.ok(progressRequests);
     }
 }

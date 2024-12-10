@@ -9,4 +9,7 @@ import java.util.List;
 public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, Long> {
 
     List<ServiceRequest> findByHouseUserMapping(HouseUserMapping houseUserMapping);
+
+    // 진행 및 완료된 요청서 조회
+    List<ServiceRequest> findByHouseUserMappingAndRequestStatus(HouseUserMapping houseUserMapping, String requestStatus);
 }
