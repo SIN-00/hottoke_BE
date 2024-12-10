@@ -1,6 +1,7 @@
 package hotketok.hotketok_server.Controller;
 
 import hotketok.hotketok_server.DTO.CustomUserDetails;
+import hotketok.hotketok_server.Domain.ConstructionDate;
 import hotketok.hotketok_server.Domain.HouseUserMapping;
 import hotketok.hotketok_server.Domain.ServiceRequest;
 import hotketok.hotketok_server.Domain.User;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,47 +44,59 @@ public class ServiceRequestController {
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByEmail(loginId);
 
-        // [하우스유저매핑]과 연결
         HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         String category = (String) requestBody.get("category");
         String requestImage = (String) requestBody.get("request_image");
         String requestDescription = (String) requestBody.get("request_description");
-        // 스케줄 데이터 파싱
-        List<Map<String, Object>> constructionDates = (List<Map<String, Object>>) requestBody.get("construction_date");
-        List<LocalDateTime> parsedDates = new ArrayList<>();
 
-        for (Map<String, Object> dateEntry : constructionDates) {
-            String date = (String) dateEntry.get("date"); // 날짜 추출
-            List<String> times = (List<String>) dateEntry.get("times"); // 시간 목록 추출
+        // `construction_date` 데이터 파싱
+        List<Map<String, Object>> constructionDatesInput = (List<Map<String, Object>>) requestBody.get("construction_date");
 
-            for (String time : times) {
-                LocalDateTime dateTime = LocalDateTime.parse(
-                        date + " " + time,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-                );
-                parsedDates.add(dateTime);
-            }
+        ServiceRequest serviceRequest = ServiceRequest.builder()
+                .category(category)
+                .requestImage(requestImage)
+                .requestDescription(requestDescription)
+                .requestStatus("PENDING")
+                .houseUserMapping(houseUserMapping)
+                .createdAt(LocalDateTime.now())
+                .status("ACTIVE")
+                .build();
+
+        // `constructionDates` 초기화 확인
+        if (serviceRequest.getConstructionDates() == null) {
+            serviceRequest.setConstructionDates(new ArrayList<>());
         }
 
-        // 요청서 저장
-        for (LocalDateTime constructionDate : parsedDates) {
-            ServiceRequest serviceRequest = ServiceRequest.builder()
-                    .category(category)
-                    .requestImage(requestImage)
-                    .requestDescription(requestDescription)
-                    .constructionDate(constructionDate)
-                    .houseUserMapping(houseUserMapping)
-                    .createdAt(LocalDateTime.now())
-                    .status("업체 찾는 중") // 요청서 만들어지면 초기 값
+        // ConstructionDate 추가
+        for (Map<String, Object> dateEntry : constructionDatesInput) {
+            LocalDate date = LocalDate.parse((String) dateEntry.get("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            // 안전한 타입 캐스팅
+            List<String> times = new ArrayList<>();
+            Object timesObject = dateEntry.get("times");
+            if (timesObject instanceof List<?>) {
+                times = ((List<?>) timesObject).stream()
+                        .filter(item -> item instanceof String)
+                        .map(String.class::cast)
+                        .collect(Collectors.toList());
+            }
+
+            ConstructionDate constructionDate = ConstructionDate.builder()
+                    .date(date)
+                    .times(times)
+                    .serviceRequest(serviceRequest)
                     .build();
 
-            serviceRequestRepository.save(serviceRequest);
+            serviceRequest.getConstructionDates().add(constructionDate);
         }
+
+        serviceRequestRepository.save(serviceRequest);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
+        response.put("requestId", serviceRequest.getRequestId().toString());
         return ResponseEntity.ok(response);
     }
 
@@ -92,9 +106,6 @@ public class ServiceRequestController {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByEmail(loginId);
-
-        List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
-
-        return ResponseEntity.ok(progressRequests);
+        return null;
     }
 }

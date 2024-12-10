@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,7 +27,7 @@ public class ServiceRequest {
     private String requestDescription;
 
     @Column
-    private LocalDateTime constructionDate;
+    private String category;
 
     @Column
     private String requestStatus;
@@ -38,8 +40,9 @@ public class ServiceRequest {
     private LocalDateTime createdAt;
 
     @Column
-    private String category;
-
-    @Column
     private String status;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "serviceRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ConstructionDate> constructionDates = new ArrayList<>();
 }
