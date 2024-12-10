@@ -58,10 +58,9 @@ public class ServiceRequestController {
                 .category(category)
                 .requestImage(requestImage)
                 .requestDescription(requestDescription)
-                .requestStatus("PENDING")
                 .houseUserMapping(houseUserMapping)
                 .createdAt(LocalDateTime.now())
-                .status("ACTIVE")
+                .status(0) // 업체 찾는 중 초기 세팅
                 .build();
 
         // `constructionDates` 초기화 확인
@@ -96,16 +95,27 @@ public class ServiceRequestController {
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
-        response.put("requestId", serviceRequest.getRequestId().toString());
         return ResponseEntity.ok(response);
     }
 
     // 진행중인 요청서 조회
     @GetMapping("/service/progressing")
-    public ResponseEntity<List<ServiceRequest>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Map<String, Long>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByEmail(loginId);
-        return null;
+
+        // 진행중인 요청서 가져오기
+        List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
+
+        List<Map<String, Long>> response = progressRequests.stream() // 여러 개 일 수 있음
+                .map(request -> {
+                    Map<String, Long> map = new HashMap<>();
+                    map.put("request_id", request.getRequestId());
+                    return map;
+                })
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 }

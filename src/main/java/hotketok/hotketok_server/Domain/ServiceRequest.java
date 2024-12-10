@@ -29,9 +29,6 @@ public class ServiceRequest {
     @Column
     private String category;
 
-    @Column
-    private String requestStatus;
-
     @ManyToOne
     @JoinColumn(name = "houseUserMappingId", nullable = false)
     private HouseUserMapping houseUserMapping;
@@ -40,7 +37,7 @@ public class ServiceRequest {
     private LocalDateTime createdAt;
 
     @Column
-    private String status;
+    private Integer status;
 
     @Builder.Default
     @OneToMany(mappedBy = "serviceRequest", cascade = CascadeType.ALL, orphanRemoval = true)

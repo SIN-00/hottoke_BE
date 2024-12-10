@@ -18,11 +18,11 @@ public class HouseUserMapping {
     private Long houseUserMappingId;
 
     @ManyToOne
-    @JoinColumn(name = "house_id", nullable = false) // 외래 키 이름 명시
+    @JoinColumn(name = "house_id", nullable = false)
     private House house;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // 외래 키 이름 명시
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column

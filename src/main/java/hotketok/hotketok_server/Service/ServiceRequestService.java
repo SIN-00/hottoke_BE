@@ -25,7 +25,7 @@ public class ServiceRequestService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         // 해당 [하우스유저매핑]과 연결된 요청서 조회 & 조회된 요청서 중 "업체 찾는 중"인 것 조회 및 반환
-        List<ServiceRequest> progressRequests = serviceRequestRepository.findByHouseUserMappingAndRequestStatus(houseUserMapping, "업체 찾는 중");
+        List<ServiceRequest> progressRequests = serviceRequestRepository.findByHouseUserMappingAndStatus(houseUserMapping, 0);
 
         return progressRequests;
     }
