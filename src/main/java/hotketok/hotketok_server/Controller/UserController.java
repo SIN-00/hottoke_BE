@@ -7,6 +7,7 @@ import hotketok.hotketok_server.Domain.HouseUserMapping;
 import hotketok.hotketok_server.Domain.User;
 import hotketok.hotketok_server.Repository.HouseUserMappingRepository;
 import hotketok.hotketok_server.Repository.UserRepository;
+import hotketok.hotketok_server.Service.HouseUserMappingService;
 import hotketok.hotketok_server.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final HouseUserMappingService houseUserMappingService;
     private final UserRepository userRepository;
     private final HouseUserMappingRepository houseUserMappingRepository;
 
@@ -33,6 +35,11 @@ public class UserController {
         System.out.println("Request received at /join: " + joinDTO);
 
         userService.joinProcess(joinDTO);
+        String loginId = joinDTO.getLoginId();
+        Long userId = userRepository.findByLoginId(loginId).getId();
+        houseUserMappingService.houseUserSave(joinDTO, userId);
+
+
         return "회원가입에 성공하셨습니다!";
     }
 
