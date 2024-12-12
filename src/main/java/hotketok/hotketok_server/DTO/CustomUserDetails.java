@@ -36,6 +36,10 @@ public class CustomUserDetails implements UserDetails {
     //로그인 아이디를 반환해야함
     @Override
     public String getUsername() {
+        return user.getUsername();
+    }
+
+    public String getLoginId() {
         return user.getLoginId();
     }
 
