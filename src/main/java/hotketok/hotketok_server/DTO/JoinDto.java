@@ -16,6 +16,11 @@ public class JoinDto {
 
     private String password;
 
+    private String address;
+
+    private String unitNumber;
+
+
     //    @Min(value = 0, message = "올바른 나이를 입력해주세요.")
 //    @Max(value = 120, message = "올바른 나이를 입력해주세요")
 
