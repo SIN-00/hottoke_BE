@@ -28,7 +28,7 @@ public class VendorRequestMappingController {
     public ResponseEntity<Map<String, Map<String, Object>>> getEstimate(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         Map<String, Map<String, Object>> response = vendorRequestMappingService.getEstimate(requestId, user);
         return ResponseEntity.ok(response);

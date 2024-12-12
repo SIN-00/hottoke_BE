@@ -99,7 +99,7 @@ public class ServiceRequestController {
     public ResponseEntity<List<Map<String, Long>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         // 진행중인 요청서 가져오기
         List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
@@ -120,7 +120,7 @@ public class ServiceRequestController {
     public ResponseEntity<List<Map<String, Long>>> doneServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         // 완료된 요청서 가져오기
         List<ServiceRequest> progressRequests = serviceRequestService.doneServiceRequest(user);
@@ -141,7 +141,7 @@ public class ServiceRequestController {
     public ResponseEntity<Map<String, Object>> getServiceRequest(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         Map<String, Object> response = serviceRequestService.getServiceRequest(requestId, user);
         return ResponseEntity.ok(response);
@@ -152,7 +152,7 @@ public class ServiceRequestController {
     public ResponseEntity<Map<String, String>> deleteRequest(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         serviceRequestService.deleteServiceRequest(requestId, user);
 
