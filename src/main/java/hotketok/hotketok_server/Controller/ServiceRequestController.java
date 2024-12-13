@@ -38,7 +38,7 @@ public class ServiceRequestController {
     public ResponseEntity<Map<String, String>> postServiceRequest(@RequestBody Map<String, Object> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByEmail(loginId);
+        User user = userRepository.findByLoginId(loginId);
 
         HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
