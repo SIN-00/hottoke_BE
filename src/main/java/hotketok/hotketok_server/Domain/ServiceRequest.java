@@ -21,7 +21,7 @@ public class ServiceRequest {
     private Long requestId;
 
     @Column
-    private String requestImage;
+    private List<String> requestImage;
 
     @Column
     private String requestDescription;

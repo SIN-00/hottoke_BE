@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -44,7 +41,7 @@ public class ServiceRequestController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         String category = (String) requestBody.get("category");
-        String requestImage = (String) requestBody.get("request_image");
+        List<String> requestImages = (List<String>) requestBody.get("request_image");
         String requestDescription = (String) requestBody.get("request_description");
 
         // `construction_date` 데이터 파싱
@@ -52,7 +49,7 @@ public class ServiceRequestController {
 
         ServiceRequest serviceRequest = ServiceRequest.builder()
                 .category(category)
-                .requestImage(requestImage)
+                .requestImage(requestImages)
                 .requestDescription(requestDescription)
                 .houseUserMapping(houseUserMapping)
                 .createdAt(LocalDateTime.now())
