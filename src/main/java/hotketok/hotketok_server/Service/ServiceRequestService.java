@@ -1,5 +1,8 @@
 package hotketok.hotketok_server.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hotketok.hotketok_server.Domain.HouseUserMapping;
 import hotketok.hotketok_server.Domain.ServiceRequest;
 import hotketok.hotketok_server.Domain.User;
@@ -8,10 +11,7 @@ import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +61,20 @@ public class ServiceRequestService {
         response.put("category", serviceRequest.getCategory());
         response.put("created_at", serviceRequest.getCreatedAt().toString());
         response.put("address", serviceRequest.getHouseUserMapping().getHouse().getHouseAddress());
-        response.put("request_image", serviceRequest.getRequestImage());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> requestImages = new ArrayList<>(); // 기본값으로 빈 리스트 초기화
+
+        try {
+            requestImages = objectMapper.readValue(
+                    serviceRequest.getRequestImage(),
+                    new TypeReference<List<String>>() {}
+            );
+        } catch (JsonProcessingException e) {
+            System.err.println("Failed to parse JSON: " + e.getMessage());
+            throw new RuntimeException("Invalid request_image format", e);
+        }
+        response.put("request_image", requestImages);
         response.put("request_description", serviceRequest.getRequestDescription());
         response.put("status", serviceRequest.getStatus());
 
