@@ -20,8 +20,9 @@ public class ServiceRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
 
-    @Column
-    private List<String> requestImage;
+    @Lob
+    @Column(columnDefinition = "BLOB") // BLOB으로 저장
+    private String requestImage; // JSON 문자열로 저장
 
     @Column
     private String requestDescription;
