@@ -1,5 +1,7 @@
 package hotketok.hotketok_server.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hotketok.hotketok_server.DTO.CustomUserDetails;
 import hotketok.hotketok_server.Domain.ConstructionDate;
 import hotketok.hotketok_server.Domain.HouseUserMapping;
@@ -44,36 +46,32 @@ public class ServiceRequestController {
         List<String> requestImages = (List<String>) requestBody.get("request_image");
         String requestDescription = (String) requestBody.get("request_description");
 
-        // `construction_date` 데이터 파싱
+        // requestImage를 JSON으로 직렬화
+        String requestImageJson = null;
+        try {
+            requestImageJson = new ObjectMapper().writeValueAsString(requestImages);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize request images", e);
+        }
+
         List<Map<String, Object>> constructionDatesInput = (List<Map<String, Object>>) requestBody.get("construction_date");
 
         ServiceRequest serviceRequest = ServiceRequest.builder()
                 .category(category)
-                .requestImage(requestImages)
+                .requestImage(requestImageJson) // JSON 문자열 저장
                 .requestDescription(requestDescription)
                 .houseUserMapping(houseUserMapping)
                 .createdAt(LocalDateTime.now())
-                .status(0) // 업체 찾는 중 초기 세팅
+                .status(0) // 초기 상태
                 .build();
-
-        // `constructionDates` 초기화 확인
-        if (serviceRequest.getConstructionDates() == null) {
-            serviceRequest.setConstructionDates(new ArrayList<>());
-        }
 
         // ConstructionDate 추가
         for (Map<String, Object> dateEntry : constructionDatesInput) {
             LocalDate date = LocalDate.parse((String) dateEntry.get("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            // 안전한 타입 캐스팅
-            List<String> times = new ArrayList<>();
-            Object timesObject = dateEntry.get("times");
-            if (timesObject instanceof List<?>) {
-                times = ((List<?>) timesObject).stream()
-                        .filter(item -> item instanceof String)
-                        .map(String.class::cast)
-                        .collect(Collectors.toList());
-            }
+            List<String> times = ((List<?>) dateEntry.get("times")).stream()
+                    .filter(item -> item instanceof String)
+                    .map(String.class::cast)
+                    .collect(Collectors.toList());
 
             ConstructionDate constructionDate = ConstructionDate.builder()
                     .date(date)
