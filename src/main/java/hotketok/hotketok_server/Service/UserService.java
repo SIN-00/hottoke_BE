@@ -29,6 +29,7 @@ public class UserService {
         userData.setUsername(joinDTO.getUsername());
         userData.setLoginId(joinDTO.getLoginId());
         userData.setPassword(bCryptPasswordEncoder.encode(joinDTO.getPassword()));
+        userData.setRole("ROLE_USER");
 
         userRepository.save(userData);
         System.out.println("유저 추가 완료");

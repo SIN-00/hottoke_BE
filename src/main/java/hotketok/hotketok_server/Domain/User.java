@@ -21,6 +21,10 @@ public class User {
     private String username;
 
     private String role;
+    @PrePersist
+    public void prePersist() {
+        this.role = this.role == null ? "ROLE_USER" : this.role; // role이 null인 경우 기본값 설정
+    }
 
     @Column(name = "login_id", nullable = false, unique = true)
     private String loginId;
