@@ -29,30 +29,30 @@ public class KnockKnockController {
     private final HouseUserMappingRepository houseUserMappingRepository;
 
     @PostMapping("/post")
-    public ResponseEntity<Map<String, String>> KnockPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody KnockKnockDTO knockKnockRequest){
-
+    public ResponseEntity<Map<String, String>> knockPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody KnockKnock knockKnockRequest) {
         String loginId = userDetails.getUser().getLoginId();
         User sender = userRepository.findByLoginId(loginId);
 
+        System.out.println("senderId"+sender.getId());
+        System.out.println("receiverId"+knockKnockRequest.getReceiverId());
         // Receiver 유효성 확인
-        User receiver = userRepository.findById(knockKnockRequest.getReceiver().getId())
+        User receiver = userRepository.findById(knockKnockRequest.getReceiverId())
                 .orElse(null);
 
         if (receiver == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid receiver ID"));
         }
 
-
-        Optional<HouseUserMapping> userMappings = houseUserMappingRepository.findByUser(sender);
-        if (userMappings.isEmpty()) {
+        Optional<HouseUserMapping> userMapping = houseUserMappingRepository.findByUser(sender);
+        if (userMapping.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         // KnockKnock 객체 생성
         KnockKnock knockKnock = KnockKnock.builder()
-                .receiver(receiver)
-                .sender(sender)
-                .houseUserMapping(userMappings.get()) // Sender의 House 설정
+                .receiverId(receiver.getId())
+                .senderId(sender.getId())
+                .houseUserMapping(userMapping.get()) // Sender의 House 설정
                 .content(knockKnockRequest.getContent())
                 .tag(knockKnockRequest.getTag())
                 .anonymity(knockKnockRequest.getAnonymity())

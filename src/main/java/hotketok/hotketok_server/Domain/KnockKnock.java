@@ -17,13 +17,11 @@ public class KnockKnock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long knockId;
 
-    @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    private Long receiverId;
 
-    @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    private Long senderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "houseUserMapping_id", nullable = false)
