@@ -19,11 +19,11 @@ public class VendorRequestMapping {
     private ServiceRequest request;
 
     @ManyToOne
-    @JoinColumn(name = "vendor_id", nullable = false)
+    @JoinColumn(name = "vendorId", nullable = false)
     private ConstructionVendor vendor;
 
     @Column
-    private String status;
+    private Integer status;
 
     @Column
     private String estimatePrice;
