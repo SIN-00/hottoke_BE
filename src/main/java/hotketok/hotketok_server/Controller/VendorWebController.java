@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class VendorWebController {
     private final VendorWebService vendorWebService;
 
     // 수리 요청 조회
+    @GetMapping("/vendor/search")
     public ResponseEntity<List<Map<String, Object>>> getServiceRequest() {
 
         List<Map<String, Object>> response = vendorWebService.getServiceRequest();
