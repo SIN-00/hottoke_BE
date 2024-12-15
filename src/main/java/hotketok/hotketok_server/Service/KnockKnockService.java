@@ -18,4 +18,9 @@ public class KnockKnockService {
         // 특정 Sender의 모든 KnockKnock 데이터를 반환
         return knockKnockRepository.findAllBySenderIdOrderByCreatedAtDesc(senderId);
     }
+
+    public List<KnockKnock> getKnocksByReciever(Long recieverId) {
+        // 특정 Sender의 모든 KnockKnock 데이터를 반환
+        return knockKnockRepository.findAllBySenderIdOrderByCreatedAtDesc(recieverId);
+    }
 }
