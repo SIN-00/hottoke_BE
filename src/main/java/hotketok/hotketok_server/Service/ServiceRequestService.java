@@ -3,11 +3,10 @@ package hotketok.hotketok_server.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hotketok.hotketok_server.Domain.HouseUserMapping;
-import hotketok.hotketok_server.Domain.ServiceRequest;
-import hotketok.hotketok_server.Domain.User;
+import hotketok.hotketok_server.Domain.*;
 import hotketok.hotketok_server.Repository.HouseUserMappingRepository;
 import hotketok.hotketok_server.Repository.ServiceRequestRepository;
+import hotketok.hotketok_server.Repository.VendorRequestMappingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +18,47 @@ public class ServiceRequestService {
 
     private final HouseUserMappingRepository houseUserMappingRepository;
     private final ServiceRequestRepository serviceRequestRepository;
+    private final VendorRequestMappingRepository vendorRequestMappingRepository;
 
     // 진행중인 요청서 조회
-    public List<ServiceRequest> progressServiceRequest(User user) {
+    public List<Map<String, Object>> progressServiceRequest(User user) {
 
-        // [하우스유저매핑]과 연결
-        HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
+        // 진행 중인 요청서 가져오기 (상태가 0, 1, 2)
+        List<ServiceRequest> progressRequests = serviceRequestRepository.findByStatusIn(List.of(0, 1, 2));
 
-        // 해당 [하우스유저매핑]과 연결된 요청서 조회 & 조회된 요청서 중 "업체 찾는 중"인 것 조회 및 반환
-        List<ServiceRequest> progressRequests = serviceRequestRepository.findByHouseUserMappingAndStatus(houseUserMapping, 0);
+        List<Map<String, Object>> response = new ArrayList<>();
 
-        return progressRequests;
+        for (ServiceRequest request : progressRequests) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("request_id", request.getRequestId());
+            map.put("category", request.getCategory());
+            map.put("date", String.valueOf(request.getCreatedAt())); // 웹페이지 기능 구현 후 수정 필요
+            map.put("status", request.getStatus());
+
+            // 상태가 2 (업체 매칭)인 경우, 견적서 정보 추가
+            if (request.getStatus() == 2) {
+                List<VendorRequestMapping> vendorRequestMappings = vendorRequestMappingRepository.findByRequest(request);
+
+                // 견적서 정보를 리스트로 추가
+                List<Map<String, Object>> vendorDetails = new ArrayList<>();
+                for (VendorRequestMapping mapping : vendorRequestMappings) {
+                    Map<String, Object> vendorMap = new HashMap<>();
+                    vendorMap.put("vendor_name", mapping.getVendor().getVendorName());
+                    vendorMap.put("estimate_price", mapping.getEstimatePrice());
+                    vendorMap.put("estimate_time", mapping.getEstimateTime());
+                    vendorMap.put("additional_comment", mapping.getAdditionalComment());
+
+                    vendorDetails.add(vendorMap);
+                }
+
+                // 견적서 정보 포함
+                map.put("vendor_details", vendorDetails);
+            }
+
+            response.add(map);
+        }
+
+        return response;
     }
 
     // 완료된 요청서 조회

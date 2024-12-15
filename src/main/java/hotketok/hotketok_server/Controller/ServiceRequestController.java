@@ -89,23 +89,13 @@ public class ServiceRequestController {
 
     // 진행중인 요청서 조회
     @GetMapping("/service/progressing")
-    public ResponseEntity<List<Map<String, String>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Map<String, Object>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
 
         // 진행중인 요청서 가져오기
-        List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
-
-        List<Map<String, String>> response = progressRequests.stream() // 여러 개 일 수 있음
-                .map(request -> {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("request_id", String.valueOf(request.getRequestId()));
-                    map.put("category", request.getCategory());
-                    map.put("date", String.valueOf(request.getCreatedAt())); // 웹페이지 기능 구현 후 수정 필요
-                    return map;
-                })
-                .toList();
+        List<Map<String, Object>> response = serviceRequestService.progressServiceRequest(user);
 
         return ResponseEntity.ok(response);
     }
