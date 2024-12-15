@@ -12,3 +12,4 @@ import java.util.List;
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     // 특정 House와 관련된 공지사항 조회
     List<Notice> findByHouseUserMapping(HouseUserMapping houseUserMapping);
+}
