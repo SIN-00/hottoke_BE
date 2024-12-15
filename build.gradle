@@ -47,3 +47,22 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task runWebApp(type: JavaExec) {
+	group = "application"
+	description = "Run WebApp server on port 8080"
+	mainClass = 'com.example.WebAppApplication'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+task runWeb(type: JavaExec) {
+	group = "application"
+	description = "Run Web server on port 8081"
+	mainClass = 'com.example.WebServerApplication'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+task runBoth(dependsOn: ['runWebApp', 'runWeb']) {
+	group = "application"
+	description = "Run both WebApp and Contractor servers"
+}
