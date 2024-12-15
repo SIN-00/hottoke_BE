@@ -8,17 +8,21 @@ import hotketok.hotketok_server.Domain.User;
 import hotketok.hotketok_server.Repository.HouseUserMappingRepository;
 import hotketok.hotketok_server.Repository.KnockKnockRepository;
 import hotketok.hotketok_server.Repository.UserRepository;
+import hotketok.hotketok_server.Service.KnockKnockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class KnockKnockController {
     private final UserRepository userRepository;
     private final KnockKnockRepository knockKnockRepository;
     private final HouseUserMappingRepository houseUserMappingRepository;
+    private final KnockKnockService knockKnockService;
 
     @PostMapping("/post")
     public ResponseEntity<Map<String, String>> knockPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody KnockKnock knockKnockRequest) {
@@ -69,4 +74,30 @@ public class KnockKnockController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/post-send")
+    public ResponseEntity<Map<Long, Map<String, Object>>> getKnockList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String loginId = userDetails.getUser().getLoginId();
+        User sender = userRepository.findByLoginId(loginId);
+        Long senderId = sender.getId();
+
+        System.out.println("post-send senderId "+senderId);
+
+        // Service에서 최신 날짜순으로 정렬된 KnockKnock 리스트 가져오기
+        List<KnockKnock> knocks = knockKnockService.getKnocksBySender(senderId);
+
+        // JSON 형태로 구성
+        Map<Long, Map<String, Object>> response = knocks.stream().collect(Collectors.toMap(
+                KnockKnock::getKnockId,
+                knock -> Map.of(
+                        "receiverId", knock.getReceiverId(),
+                        "content", knock.getContent(),
+                        "tag", knock.getTag(),
+                        "anonymity", knock.getAnonymity(),
+                        "createdAt", knock.getCreatedAt(),
+                        "timeArray", knock.getTimeArray()
+                )
+        ));
+
+        return ResponseEntity.ok(response);
+    }
 }
