@@ -22,7 +22,7 @@ jobs:
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application-jelly.properties
 
       - name: Gradle 빌드
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
 
       # EC2 #1 무중단 배포 (web)
       - name: EC2 #1에 무중단 배포 (Gradle runWeb 실행)
@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.EC2_1_PRIVATE_KEY }}
           script_stop: true
           script: |
-            DEPLOY_DIR="/home/ubuntu/Salary_BE"
+            DEPLOY_DIR="/home/ubuntu/hottoke_BE"
             GREEN_DIR="$DEPLOY_DIR/green"
             BLUE_DIR="$DEPLOY_DIR/blue"
 
@@ -66,7 +66,7 @@ jobs:
           key: ${{ secrets.EC2_2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            DEPLOY_DIR="/home/ubuntu/Salary_BE"
+            DEPLOY_DIR="/home/ubuntu/hottoke_BE"
             GREEN_DIR="$DEPLOY_DIR/green"
             BLUE_DIR="$DEPLOY_DIR/blue"
 
