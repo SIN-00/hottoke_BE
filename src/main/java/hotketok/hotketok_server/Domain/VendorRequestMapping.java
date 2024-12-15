@@ -2,7 +2,6 @@ package hotketok.hotketok_server.Domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Data
@@ -19,11 +18,11 @@ public class VendorRequestMapping {
     private ServiceRequest request;
 
     @ManyToOne
-    @JoinColumn(name = "vendor_id", nullable = false)
+    @JoinColumn(name = "vendorId", nullable = false)
     private ConstructionVendor vendor;
 
     @Column
-    private String status;
+    private Integer status;
 
     @Column
     private String estimatePrice;

@@ -9,4 +9,10 @@ import java.util.List;
 public interface VendorRequestMappingRepository extends JpaRepository<VendorRequestMapping, Long> {
 
     List<VendorRequestMapping> findByRequest(ServiceRequest request);
+
+    // 공사업체와 status로 요청서 조회
+    List<VendorRequestMapping> findByVendorVendorIdAndRequestStatus(Long vendorId, Integer status);
+
+    // 공사업체가 견적서 작성
+    VendorRequestMapping findByVendorVendorIdAndRequestRequestId(Long vendorId, Long requestId);
 }

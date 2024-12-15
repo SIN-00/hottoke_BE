@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface KnockKnockRepository extends JpaRepository<KnockKnock, Integer> {
 
     List<KnockKnock> findAllBySenderIdOrderByCreatedAtDesc(Long senderId);
+    List<KnockKnock> findAllByReceiverIdOrderByCreatedAtDesc(Long recieverId);
+
 }

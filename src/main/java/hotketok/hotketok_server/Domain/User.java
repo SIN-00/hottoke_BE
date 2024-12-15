@@ -1,10 +1,7 @@
 package hotketok.hotketok_server.Domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class User {
 
     @Id
@@ -42,5 +40,6 @@ public class User {
 
     @Column
     private String profile_image;
+
 
 }
