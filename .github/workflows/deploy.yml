@@ -21,8 +21,8 @@ jobs:
       - name: application-jelly.properties 생성
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application-jelly.properties
 
-      # EC2 #1 무중단 배포 (web)
-      - name: EC2 #1에 무중단 배포 (Gradle runWeb 실행)
+      # EC2 #1 무중단 배포 (WebApp)
+      - name: EC2 #1에 무중단 배포 (Gradle runWebApp 실행)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_1_HOST }}
@@ -34,16 +34,16 @@ jobs:
             GREEN_DIR="$DEPLOY_DIR/green"
             BLUE_DIR="$DEPLOY_DIR/blue"
 
-            # 기존 실행 종료 (포트 8081 사용 중지)
-            sudo fuser -k -n tcp 8081 || true
+            # 기존 실행 종료 (포트 8080 사용 중지)
+            sudo fuser -k -n tcp 8080 || true
 
             # Green 디렉터리 초기화 및 복사
             mkdir -p $GREEN_DIR
-            rsync -av --exclude="$GREEN_DIR" --exclude="$BLUE_DIR" $DEPLOY_DIR/ $GREEN_DIR/
+            rsync -av --delete --exclude="green" --exclude="blue" $DEPLOY_DIR/ $GREEN_DIR/
 
-            # Gradle runWeb 실행
+            # Gradle runWebApp 실행
             cd $GREEN_DIR
-            nohup ./gradlew runWeb > $GREEN_DIR/webserver.log 2>&1 &
+            nohup ./gradlew runWebApp > $GREEN_DIR/webapp.log 2>&1 &
 
             # 심볼릭 링크로 트래픽 전환
             ln -sfn $GREEN_DIR $DEPLOY_DIR/current
@@ -54,8 +54,8 @@ jobs:
             fi
             mv $GREEN_DIR $BLUE_DIR  # Green -> Blue 역할 전환
 
-      # EC2 #2 무중단 배포 (webapp)
-      - name: EC2 #2에 무중단 배포 (Gradle runWebApp 실행)
+      # EC2 #2 무중단 배포 (Web)
+      - name: EC2 #2에 무중단 배포 (Gradle runWeb 실행)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_2_HOST }}
@@ -67,16 +67,16 @@ jobs:
             GREEN_DIR="$DEPLOY_DIR/green"
             BLUE_DIR="$DEPLOY_DIR/blue"
 
-            # 기존 실행 종료 (포트 8080 사용 중지)
-            sudo fuser -k -n tcp 8080 || true
+            # 기존 실행 종료 (포트 8081 사용 중지)
+            sudo fuser -k -n tcp 8081 || true
 
             # Green 디렉터리 초기화 및 복사
             mkdir -p $GREEN_DIR
-            rsync -av --exclude="$GREEN_DIR" --exclude="$BLUE_DIR" $DEPLOY_DIR/ $GREEN_DIR/
+            rsync -av --delete --exclude="green" --exclude="blue" $DEPLOY_DIR/ $GREEN_DIR/
 
-            # Gradle runWebApp 실행
+            # Gradle runWeb 실행
             cd $GREEN_DIR
-            nohup ./gradlew runWebApp > $GREEN_DIR/webapp.log 2>&1 &
+            nohup ./gradlew runWeb > $GREEN_DIR/webserver.log 2>&1 &
 
             # 심볼릭 링크로 트래픽 전환
             ln -sfn $GREEN_DIR $DEPLOY_DIR/current
