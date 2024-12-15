@@ -3,13 +3,11 @@ package hotketok.hotketok_server.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hotketok.hotketok_server.DTO.CustomUserDetails;
-import hotketok.hotketok_server.Domain.ConstructionDate;
-import hotketok.hotketok_server.Domain.HouseUserMapping;
-import hotketok.hotketok_server.Domain.ServiceRequest;
-import hotketok.hotketok_server.Domain.User;
+import hotketok.hotketok_server.Domain.*;
 import hotketok.hotketok_server.Repository.HouseUserMappingRepository;
 import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import hotketok.hotketok_server.Repository.UserRepository;
+import hotketok.hotketok_server.Repository.VendorRequestMappingRepository;
 import hotketok.hotketok_server.Service.ServiceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +89,7 @@ public class ServiceRequestController {
 
     // 진행중인 요청서 조회
     @GetMapping("/service/progressing")
-    public ResponseEntity<List<Map<String, Long>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Map<String, String>>> progressServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
@@ -99,10 +97,12 @@ public class ServiceRequestController {
         // 진행중인 요청서 가져오기
         List<ServiceRequest> progressRequests = serviceRequestService.progressServiceRequest(user);
 
-        List<Map<String, Long>> response = progressRequests.stream() // 여러 개 일 수 있음
+        List<Map<String, String>> response = progressRequests.stream() // 여러 개 일 수 있음
                 .map(request -> {
-                    Map<String, Long> map = new HashMap<>();
-                    map.put("request_id", request.getRequestId());
+                    Map<String, String> map = new HashMap<>();
+                    map.put("request_id", String.valueOf(request.getRequestId()));
+                    map.put("category", request.getCategory());
+                    map.put("date", String.valueOf(request.getCreatedAt())); // 웹페이지 기능 구현 후 수정 필요
                     return map;
                 })
                 .toList();
@@ -112,7 +112,7 @@ public class ServiceRequestController {
 
     // 완료된 요청서 조회
     @GetMapping("/service/done")
-    public ResponseEntity<List<Map<String, Long>>> doneServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Map<String, String>>> doneServiceRequest(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
@@ -120,10 +120,13 @@ public class ServiceRequestController {
         // 완료된 요청서 가져오기
         List<ServiceRequest> progressRequests = serviceRequestService.doneServiceRequest(user);
 
-        List<Map<String, Long>> response = progressRequests.stream() // 여러 개 일 수 있음
+        List<Map<String, String>> response = progressRequests.stream() // 여러 개 일 수 있음
                 .map(request -> {
-                    Map<String, Long> map = new HashMap<>();
-                    map.put("request_id", request.getRequestId());
+                    Map<String, String> map = new HashMap<>();
+                    map.put("request_id", String.valueOf(request.getRequestId()));
+                    map.put("category", request.getCategory());
+                    map.put("date", String.valueOf(request.getCreatedAt())); // 웹페이지 기능 구현 후 수정 필요
+                    map.put("construction_vendor", "메종 인테리어");
                     return map;
                 })
                 .toList();
