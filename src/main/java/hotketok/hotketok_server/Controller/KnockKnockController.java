@@ -100,4 +100,33 @@ public class KnockKnockController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/post-recieve")
+    public ResponseEntity<Map<Long, Map<String, Object>>> getKnockRecieveList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+
+        String loginId = userDetails.getUser().getLoginId();
+        System.out.println("Input loginId: " + loginId);
+        User receiver = userRepository.findByLoginId(loginId);
+        System.out.println("Receiver: " + receiver);
+        Long receiverId = receiver.getId();
+
+        // Service에서 최신 날짜순으로 정렬된 KnockKnock 리스트 가져오기
+        List<KnockKnock> knocks = knockKnockService.getKnocksByReciever(receiverId);
+
+        // JSON 형태로 구성
+        Map<Long, Map<String, Object>> response = knocks.stream().collect(Collectors.toMap(
+                KnockKnock::getKnockId,
+                knock -> Map.of(
+                        "senderId", knock.getSenderId(),
+                        "content", knock.getContent(),
+                        "tag", knock.getTag(),
+                        "anonymity", knock.getAnonymity(),
+                        "createdAt", knock.getCreatedAt(),
+                        "timeArray", knock.getTimeArray()
+                )
+        ));
+
+        return ResponseEntity.ok(response);
+    }
 }
