@@ -38,7 +38,6 @@ out/
 
 ### 보안설정을 위해 application-jelly에 mysql 정보 추가 ###
 application-jelly.properties
-application-web.properties
-application-webapp.properties
+
 
 /src/main/resources/application-jelly.properties
