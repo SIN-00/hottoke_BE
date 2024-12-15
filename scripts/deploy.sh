@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPOSITORY=/home/ubuntu  #1
-PROJECT_NAME=hotketok_server
+PROJECT_NAME=hottoke_BE
 
 cd $REPOSITORY/$PROJECT_NAME/  #2
 
