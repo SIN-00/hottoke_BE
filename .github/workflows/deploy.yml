@@ -24,7 +24,7 @@ jobs:
       - name: Gradle 빌드
         run: ./gradlew clean build
 
-      # EC2 #1 무중단 배포
+      # EC2 #1 무중단 배포 (web)
       - name: EC2 #1에 무중단 배포 (Gradle runWeb 실행)
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -37,8 +37,8 @@ jobs:
             GREEN_DIR="$DEPLOY_DIR/green"
             BLUE_DIR="$DEPLOY_DIR/blue"
 
-            # 기존 실행 종료 (포트 8080 사용 중지)
-            sudo fuser -k -n tcp 8080 || true
+            # 기존 실행 종료 (포트 8081 사용 중지)
+            sudo fuser -k -n tcp 8081 || true
 
             # 새 버전 배포 (Green 디렉터리)
             mkdir -p $GREEN_DIR
@@ -57,7 +57,7 @@ jobs:
             fi
             mv $GREEN_DIR $BLUE_DIR  # Green -> Blue 역할 전환
 
-      # EC2 #2 무중단 배포
+      # EC2 #2 무중단 배포 (wepapp)
       - name: EC2 #2에 무중단 배포 (Gradle runWeb 실행)
         uses: appleboy/ssh-action@v1.0.3
         with:
