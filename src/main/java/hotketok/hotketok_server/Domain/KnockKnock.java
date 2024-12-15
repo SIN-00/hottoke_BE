@@ -1,10 +1,7 @@
 package hotketok.hotketok_server.Domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,10 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+@Getter
+public class KnockKnock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long knockId;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
@@ -26,6 +24,10 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "houseUserMapping_id", nullable = false)
+    private HouseUserMapping houseUserMapping;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -38,5 +40,10 @@ public class Post {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @ElementCollection
+    @CollectionTable(name = "knock_time_array", joinColumns = @JoinColumn(name = "knock_id"))
+    @Column(name = "time", nullable = false)
+    private List<Boolean> timeArray;
 }
 
