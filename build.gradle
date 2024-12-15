@@ -81,3 +81,6 @@ task runBoth {
 		}
 	}
 }
+application {
+	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
+}
