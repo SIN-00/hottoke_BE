@@ -2,7 +2,6 @@ package hotketok.hotketok_server.Domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Data
