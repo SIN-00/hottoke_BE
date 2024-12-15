@@ -53,7 +53,6 @@ task runWebApp(type: JavaExec) {
 	description = "Run WebApp server on port 8080"
 	mainClass = 'hotketok.hotketok_server.WebAppApplication'
 	classpath = sourceSets.main.runtimeClasspath
-	jvmArgs = ["-Dspring.profiles.active=jelly"]
 }
 
 task runWeb(type: JavaExec) {
@@ -61,7 +60,13 @@ task runWeb(type: JavaExec) {
 	description = "Run Web server on port 8081"
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
-	jvmArgs = ["-Dspring.profiles.active=web"]
+
+}
+task runHotketokServer(type: JavaExec) {
+	group = "application"
+	description = "Run HotketokServerApplication"
+	mainClass = 'hotketok.hotketok_server.HotketokServerApplication'
+	classpath = sourceSets.main.runtimeClasspath
 }
 
 task runBoth(dependsOn: ['runWebApp', 'runWeb']) {
