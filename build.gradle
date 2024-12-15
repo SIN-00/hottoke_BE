@@ -69,7 +69,15 @@ task runHotketokServer(type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
 }
 
-task runBoth(dependsOn: ['runWebApp', 'runWeb']) {
+task runBoth {
 	group = "application"
-	description = "Run both WebApp and Contractor servers"
+	description = "Run both WebApp and Web servers concurrently"
+	dependsOn = ['runWebApp', 'runWeb']
+
+	doLast {
+		// Run both tasks in parallel
+		exec {
+			commandLine 'bash', '-c', './gradlew runWebApp & ./gradlew runWeb'
+		}
+	}
 }
