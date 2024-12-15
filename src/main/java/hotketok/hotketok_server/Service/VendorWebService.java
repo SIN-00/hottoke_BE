@@ -1,9 +1,7 @@
 package hotketok.hotketok_server.Service;
 
-import hotketok.hotketok_server.Domain.ConstructionDate;
-import hotketok.hotketok_server.Domain.ServiceRequest;
-import hotketok.hotketok_server.Domain.User;
-import hotketok.hotketok_server.Domain.VendorRequestMapping;
+import hotketok.hotketok_server.Domain.*;
+import hotketok.hotketok_server.Repository.ConstructionVendorRepository;
 import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import hotketok.hotketok_server.Repository.VendorRequestMappingRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ public class VendorWebService {
 
     private final ServiceRequestRepository serviceRequestRepository;
     private final VendorRequestMappingRepository vendorRequestMappingRepository;
+    private final ConstructionVendorRepository constructionVendorRepository;
 
     // 수리 요청 조회
     public List<Map<String, Object>> getServiceRequest() {
@@ -55,7 +54,7 @@ public class VendorWebService {
     public List<Map<String, Object>> getProgressingService(User user) {
 
         // 공사업체 ID와 status로 매핑 데이터 조회
-        List<VendorRequestMapping> mappings = vendorRequestMappingRepository.findByVendorVendorIdAndRequestStatus(1L, 3);
+        List<VendorRequestMapping> mappings = vendorRequestMappingRepository.findByVendorVendorIdAndRequestStatus(1L, 2);
 
         List<Map<String, Object>> response = new ArrayList<>();
 
@@ -82,5 +81,33 @@ public class VendorWebService {
         }
 
         return response;
+    }
+
+    // 견적서 작성
+    public String postEstimate(Long requestId, String estimate_price, String estimate_time, String additional_comment, User user) {
+
+        // VendorRequestMapping 조회
+        ServiceRequest serviceRequest = serviceRequestRepository.findByRequestId(requestId);
+
+        if (serviceRequest == null) {
+            throw new IllegalArgumentException("해당 요청서를 찾을 수 없습니다.");
+        }
+
+        Long vendorId = 1L; // 이후 수정 필요.
+        ConstructionVendor vendor = (ConstructionVendor) constructionVendorRepository.findById(vendorId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 공사업체를 찾을 수 없습니다."));
+
+        // VendorRequestMapping 튜플 생성
+        VendorRequestMapping vendorRequestMapping = VendorRequestMapping.builder()
+                .request(serviceRequest)
+                .vendor(vendor)
+                .estimatePrice(estimate_price)
+                .estimateTime(estimate_time)
+                .additionalComment(additional_comment)
+                .build();
+
+        vendorRequestMappingRepository.save(vendorRequestMapping);
+
+        return "success";
     }
 }

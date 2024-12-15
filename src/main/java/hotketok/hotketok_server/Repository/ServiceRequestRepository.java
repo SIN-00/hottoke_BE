@@ -19,4 +19,6 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
 
     // 완료되지 않은 요청서 조회
     List<ServiceRequest> findByStatus(Integer status);
+
+    ServiceRequest findByRequestId(Long requestId);
 }

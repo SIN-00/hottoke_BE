@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +42,26 @@ public class VendorWebController {
         User user = userRepository.findByLoginId(loginId);
 
         List<Map<String, Object>> response = vendorWebService.getProgressingService(user);
+        return ResponseEntity.ok(response);
+    }
+
+    // 견적서 작성
+    @PostMapping("/vendor/estimate")
+    public ResponseEntity<Map<String, String>> postEstimate(@RequestBody Map<String, Object> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByLoginId(loginId);
+
+        Long requestId = Long.parseLong(requestBody.get("request_id").toString());
+        String estimatePrice = (String) requestBody.get("estimate_price");
+        String estimateTime = (String) requestBody.get("estimate_time");
+        String additionalComment = (String) requestBody.get("additional_comment");
+
+        // 견적서 작성 처리 로직
+        vendorWebService.postEstimate(requestId, estimatePrice, estimateTime, additionalComment, user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
         return ResponseEntity.ok(response);
     }
 }

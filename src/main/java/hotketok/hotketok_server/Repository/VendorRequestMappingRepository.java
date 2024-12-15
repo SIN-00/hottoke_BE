@@ -12,4 +12,7 @@ public interface VendorRequestMappingRepository extends JpaRepository<VendorRequ
 
     // 공사업체와 status로 요청서 조회
     List<VendorRequestMapping> findByVendorVendorIdAndRequestStatus(Long vendorId, Integer status);
+
+    // 공사업체가 견적서 작성
+    VendorRequestMapping findByVendorVendorIdAndRequestRequestId(Long vendorId, Long requestId);
 }
