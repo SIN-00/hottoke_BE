@@ -12,6 +12,7 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
+	targetCompatibility = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
 }
 
 repositories {
@@ -40,7 +41,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	//유저에 조건 추가하기
+	// 유저에 조건 추가하기
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
 }
@@ -49,38 +50,43 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// WebAppApplication용 JAR 생성
+task bootJarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+	group = 'build'
+	description = 'Build BootJar for WebAppApplication'
+	archiveBaseName.set('webapp')
+	mainClass.set('hotketok.hotketok_server.WebAppApplication')
+	targetJavaVersion = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
+}
+
+// WebServerApplication용 JAR 생성
+task bootJarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+	group = 'build'
+	description = 'Build BootJar for WebServerApplication'
+	archiveBaseName.set('webserver')
+	mainClass.set('hotketok.hotketok_server.WebServerApplication')
+	targetJavaVersion = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
+}
+
+// 기본 bootJar 태스크 비활성화
+tasks.named('bootJar').configure {
+	enabled = false
+}
+
+// WebApp 실행 태스크
 task runWebApp(type: JavaExec) {
-	group = "application"
-	description = "Run WebApp server on port 8080"
+	group = 'application'
+	description = 'Run WebApp server'
 	mainClass = 'hotketok.hotketok_server.WebAppApplication'
 	classpath = sourceSets.main.runtimeClasspath
 }
 
+// WebServer 실행 태스크
 task runWeb(type: JavaExec) {
-	group = "application"
-	description = "Run Web server on port 8081"
+	group = 'application'
+	description = 'Run Web server'
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
-
-}
-task runHotketokServer(type: JavaExec) {
-	group = "application"
-	description = "Run HotketokServerApplication"
-	mainClass = 'hotketok.hotketok_server.HotketokServerApplication'
-	classpath = sourceSets.main.runtimeClasspath
-}
-
-task runBoth {
-	group = "application"
-	description = "Run both WebApp and Web servers concurrently"
-	dependsOn = ['runWebApp', 'runWeb']
-
-	doLast {
-		// Run both tasks in parallel
-		exec {
-			commandLine 'bash', '-c', './gradlew runWebApp & ./gradlew runWeb'
-		}
-	}
 }
 application {
 	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
