@@ -31,6 +31,4 @@ public class Notice {
     public void prePersist() {
         this.createdAt = LocalDateTime.now(); // 자동 생성 시간 설정
     }
-
-
 }
