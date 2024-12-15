@@ -51,14 +51,14 @@ tasks.named('test') {
 task runWebApp(type: JavaExec) {
 	group = "application"
 	description = "Run WebApp server on port 8080"
-	mainClass = 'com.example.WebAppApplication'
+	mainClass = 'hotketok.hotketok_server.WebAppApplication'
 	classpath = sourceSets.main.runtimeClasspath
 }
 
 task runWeb(type: JavaExec) {
 	group = "application"
 	description = "Run Web server on port 8081"
-	mainClass = 'com.example.WebServerApplication'
+	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
 }
 
