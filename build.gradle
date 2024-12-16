@@ -91,3 +91,13 @@ task runWeb(type: JavaExec) {
 application {
 	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
 }
+
+task bootJarWebApp(type: Jar) {
+	archiveBaseName.set("webapp")
+	dependsOn bootJar
+}
+
+task bootJarWebServer(type: Jar) {
+	archiveBaseName.set("webserver")
+	dependsOn bootJar
+}

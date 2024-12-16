@@ -26,12 +26,15 @@ jobs:
           ./gradlew clean bootJarWebApp &
           ./gradlew clean bootJarWebServer &
           wait
+          
+      - name: 빌드 산출물 확인
+        run: ls -l ./build/libs/
 
       - name: WebApp 빌드 파일 이름 변경
-        run: mv ./build/libs/*WebApp*.jar ./webapp.jar
+        run: mv ./build/libs/webapp-*.jar ./webapp.jar
 
       - name: WebServer 빌드 파일 이름 변경
-        run: mv ./build/libs/*WebServer*.jar ./webserver.jar
+        run: mv ./build/libs/webserver-*.jar ./webserver.jar
 
       # WebApp 배포 (EC2 #1)
       - name: EC2 WebApp에 파일 전송 (SCP)
