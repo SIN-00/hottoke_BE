@@ -92,12 +92,12 @@ jobs:
             fi
 
             # current 디렉터리 준비
-            if [ ! -d "$APP_DIR/current" ]; then
-              echo "current 디렉터리 생성: $APP_DIR/current"
-              mkdir -p "$APP_DIR/current"
-            else
-              echo "current 디렉터리 이미 존재: $APP_DIR/current"
-            fi
+#            if [ ! -d "$APP_DIR/current" ]; then
+#              echo "current 디렉터리 생성: $APP_DIR/current"
+#              mkdir -p "$APP_DIR/current"
+#            else
+#              echo "current 디렉터리 이미 존재: $APP_DIR/current"
+#            fi
 
             # 기존 WebApp 디렉터리 삭제 및 새로 생성
             if [ -d "$WEBAPP_DIR" ]; then
