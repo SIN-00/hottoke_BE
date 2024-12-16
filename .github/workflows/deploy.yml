@@ -78,7 +78,9 @@ jobs:
 
             # 기존 WebApp 디렉터리 삭제 및 새로 생성
             rm -rf "$WEBAPP_DIR"
-            mkdir -p "$WEBAPP_DIR"
+            if [ ! -d "$WEBAPP_DIR" ]; then
+              mkdir -p "$WEBAPP_DIR"
+            fi
 
             # JAR 파일 이동
             mv "$TOBE_DIR/$JAR_FILE" "$WEBAPP_DIR/$JAR_FILE"
@@ -107,7 +109,9 @@ jobs:
 
             # 기존 WebServer 디렉터리 삭제 및 새로 생성
             rm -rf "$WEBSERVER_DIR"
-            mkdir -p "$WEBSERVER_DIR"
+            if [ ! -d "$WEBSERVER_DIR" ]; then
+              mkdir -p "$WEBSERVER_DIR"
+            fi
 
             # JAR 파일 이동
             mv "$TOBE_DIR/$JAR_FILE" "$WEBSERVER_DIR/$JAR_FILE"
