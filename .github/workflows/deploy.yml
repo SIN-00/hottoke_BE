@@ -87,7 +87,16 @@ jobs:
             rm -rf /home/ubuntu/hottoke_BE/tobe
 
       # WebServer 배포 (EC2 #2)
-      - name: EC2 WebServer에 파일 전송 및 배포
+      - name: EC2에 파일 전송 (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          source: webserver.jar
+          target: /home/ubuntu/hottoke_BE/tobe
+
+      - name: EC2에 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_WEBSERVER_HOST }}
@@ -95,24 +104,10 @@ jobs:
           key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           script_stop: true
           script: |
-            APP_DIR="/home/ubuntu/hottoke_BE"
-            WEBSERVER_DIR="$APP_DIR/current/webserver"
-            TOBE_DIR="$APP_DIR/tobe"
-            JAR_FILE="webserver.jar"
-
-            echo "==== WebServer 배포 시작 ===="
-
-            # 기존 WebServer 디렉터리 삭제 및 새로 생성
-            rm -rf "$WEBSERVER_DIR"
-            if [ ! -d "$WEBSERVER_DIR" ]; then
-              mkdir -p "$WEBSERVER_DIR"
-            fi
-
-            # JAR 파일 이동
-            mv "$TOBE_DIR/$JAR_FILE" "$WEBSERVER_DIR/$JAR_FILE"
-            echo "WebServer JAR 파일 이동 완료"
-
-            # 기존 프로세스 종료 및 새로운 WebServer 실행
-            sudo fuser -k -n tcp 8081 || true
-            nohup java -jar "$WEBSERVER_DIR/$JAR_FILE" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
-            echo "WebServer 배포 완료"
+            rm -rf /home/ubuntu/hottoke_BE/current
+            mkdir /home/ubuntu/hottoke_BE/current
+            mv /home/ubuntu/hottoke_BE/tobe/webserver.jar /home/ubuntu/hottoke_BE/current/webserver.jar
+            cd /home/ubuntu/hottoke_BE/current
+            sudo fuser -k -n tcp 8080 || true
+            nohup java -jar webserver.jar > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/hottoke_BE/tobe
