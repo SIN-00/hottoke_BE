@@ -27,9 +27,6 @@ jobs:
       - name: Gradle 빌드
         run: ./gradlew clean
 
-      - name: 빌드된 파일 이름 변경
-        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
-
       # EC2 #1에 파일 전송 및 배포
       - name: EC2 #1에 파일 전송 (SCP)
         uses: appleboy/scp-action@v0.1.7
@@ -37,7 +34,7 @@ jobs:
           host: ${{ secrets.EC2_1_HOST }}
           username: ${{ secrets.EC2_1_USERNAME }}
           key: ${{ secrets.EC2_1_PRIVATE_KEY }}
-          source: project.jar
+          source: ./
           target: /home/ubuntu/Salary_BE/tobe
 
       - name: EC2 #1에 배포 (SSH)
@@ -50,10 +47,10 @@ jobs:
           script: |
             rm -rf /home/ubuntu/Salary_BE/current
             mkdir /home/ubuntu/Salary_BE/current
-            mv /home/ubuntu/Salary_BE/tobe/project.jar /home/ubuntu/Salary_BE/current/project.jar
+            cp -r /home/ubuntu/Salary_BE/tobe/* /home/ubuntu/Salary_BE/current/
             cd /home/ubuntu/Salary_BE/current
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar project.jar > ./output.log 2>&1 &
+            nohup ./gradlew runWebApp > webapp.log 2>&1 &
             rm -rf /home/ubuntu/Salary_BE/tobe
 
       # EC2 #2에 파일 전송 및 배포
@@ -63,7 +60,7 @@ jobs:
           host: ${{ secrets.EC2_2_HOST }}
           username: ${{ secrets.EC2_2_USERNAME }}
           key: ${{ secrets.EC2_2_PRIVATE_KEY }}
-          source: project.jar
+          source: ./
           target: /home/ubuntu/Salary_BE/tobe
 
       - name: EC2 #2에 배포 (SSH)
@@ -76,8 +73,8 @@ jobs:
           script: |
             rm -rf /home/ubuntu/Salary_BE/current
             mkdir /home/ubuntu/Salary_BE/current
-            mv /home/ubuntu/Salary_BE/tobe/project.jar /home/ubuntu/Salary_BE/current/project.jar
+            cp -r /home/ubuntu/Salary_BE/tobe/* /home/ubuntu/Salary_BE/current/
             cd /home/ubuntu/Salary_BE/current
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar project.jar > ./output.log 2>&1 &
+            nohup ./gradlew runWebApp > webapp.log 2>&1 &
             rm -rf /home/ubuntu/Salary_BE/tobe
