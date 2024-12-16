@@ -79,13 +79,20 @@ jobs:
             WEBAPP_DIR="/home/ubuntu/hottoke_BE/current/webapp"
             TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
 
+            # 기존 WebApp 디렉터리 삭제 및 새로 생성
+            if [ -d "$WEBAPP_DIR" ]; then
+              rm -rf $WEBAPP_DIR
+            fi
             mkdir -p $WEBAPP_DIR
+
+            # JAR 파일 확인 및 이동
             if [ ! -f "$TOBE_DIR/webapp.jar" ]; then
               echo "webapp.jar 파일이 없습니다!"
               exit 1
             fi
-
             mv $TOBE_DIR/webapp.jar $WEBAPP_DIR/webapp.jar
+
+            # 기존 프로세스 종료 및 새로운 WebApp 실행
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar $WEBAPP_DIR/webapp.jar > $WEBAPP_DIR/webapp.log 2>&1 &
 
