@@ -80,7 +80,7 @@ jobs:
           script: |
             rm -rf /home/ubuntu/hottoke_BE/current
             mkdir /home/ubuntu/hottoke_BE/current
-            mv /home/ubuntu/hottoke_BE/tobe/project.jar /home/ubuntu/hottoke_BE/current/project.jar
+            mv /home/ubuntu/hottoke_BE/tobe/webapp.jar /home/ubuntu/hottoke_BE/current/webapp.jar
             cd /home/ubuntu/hottoke_BE/current
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar webapp.jar > ./output.log 2>&1 &
