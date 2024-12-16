@@ -26,15 +26,27 @@ jobs:
           ./gradlew clean bootJarWebApp &
           ./gradlew clean bootJarWebServer &
           wait
-          
+
       - name: 빌드 산출물 확인
         run: ls -l ./build/libs/
 
       - name: WebApp 빌드 파일 이름 변경
-        run: mv ./build/libs/webapp-*.jar ./webapp.jar
+        run: |
+            if ls ./build/libs/webapp/webapp-*.jar 1> /dev/null 2>&1; then
+              mv ./build/libs/webapp/webapp-*.jar ./webapp.jar
+            else
+            echo "webapp JAR 파일이 없습니다."
+            exit 1
+            fi
 
       - name: WebServer 빌드 파일 이름 변경
-        run: mv ./build/libs/webserver-*.jar ./webserver.jar
+        run: |
+            if ls ./build/libs/webserver/webserver-*.jar 1> /dev/null 2>&1; then
+              mv ./build/libs/webserver/webserver-*.jar ./webserver.jar
+            else
+            echo "webserver JAR 파일이 없습니다."
+            exit 1
+            fi
 
       # WebApp 배포 (EC2 #1)
       - name: EC2 WebApp에 파일 전송 (SCP)

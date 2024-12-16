@@ -79,6 +79,7 @@ task runWebApp(type: JavaExec) {
 	description = 'Run WebApp server'
 	mainClass = 'hotketok.hotketok_server.WebAppApplication'
 	classpath = sourceSets.main.runtimeClasspath
+	destinationDirectory.set(file("$buildDir/libs/webapp")) // WebApp 전용 디렉터리
 }
 
 // WebServer 실행 태스크
@@ -87,6 +88,7 @@ task runWeb(type: JavaExec) {
 	description = 'Run Web server'
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
+	destinationDirectory.set(file("$buildDir/libs/webserver")) // WebServer 전용 디렉터리
 }
 application {
 	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
