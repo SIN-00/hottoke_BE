@@ -23,11 +23,10 @@ jobs:
 
       - name: Gradle 빌드 (WebApp & WebServer)
         run: |
-          ./gradlew clean bootJarWebApp &
-          ./gradlew clean bootJarWebServer &
-          wait
+          ./gradlew jarWebApp
+          ./gradlew jarWebServer
 
-      - name: 빌드 결과 확인
+      - name: 빌드 파일 확인
         run: |
           echo "WebApp 빌드 파일:"
           ls -l ./build/libs/webapp/
