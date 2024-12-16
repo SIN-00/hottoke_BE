@@ -78,6 +78,8 @@ jobs:
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
+            set -x 
+            
             APP_DIR="/home/ubuntu/hottoke_BE"
             WEBAPP_DIR="$APP_DIR/current/webapp"
             TOBE_DIR="$APP_DIR/tobe"
