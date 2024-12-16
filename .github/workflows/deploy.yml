@@ -46,7 +46,8 @@ jobs:
             echo "webapp JAR 파일이 없습니다."
             exit 1
           fi
-          mv $WEBAPP_FILE ./webapp.jar
+          mv "$WEBAPP_FILE" ./webapp.jar
+          echo "WebApp 빌드 파일 준비 완료: ./webapp.jar"
 
       # WebServer 빌드 파일 이름 변경
       - name: WebServer 빌드 파일 이름 변경
@@ -56,7 +57,8 @@ jobs:
             echo "webserver JAR 파일이 없습니다."
             exit 1
           fi
-          mv $WEBSERVER_FILE ./webserver.jar
+          mv "$WEBSERVER_FILE" ./webserver.jar
+          echo "WebServer 빌드 파일 준비 완료: ./webserver.jar"
 
       # WebApp 배포 (EC2 #1)
       - name: EC2 WebApp에 파일 전송 (SCP)
@@ -76,25 +78,19 @@ jobs:
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            WEBAPP_DIR="/home/ubuntu/hottoke_BE/current/webapp"
-            CURRENT_DIR="/home/ubuntu/hottoke_BE/current"
-            TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
+            APP_DIR="/home/ubuntu/hottoke_BE"
+            WEBAPP_DIR="$APP_DIR/current/webapp"
+            TOBE_DIR="$APP_DIR/tobe"
+            JAR_FILE="webapp.jar"
 
             echo "==== WebApp 배포 시작 ===="
 
-            # current가 파일인지 확인하고 처리
-            if [ -e "$CURRENT_DIR" ] && [ ! -d "$CURRENT_DIR" ]; then
-              echo "경로 $CURRENT_DIR 는 파일로 존재합니다. 삭제 후 디렉터리 생성."
-              rm -f "$CURRENT_DIR"
+            # current 디렉터리 준비
+            if [ -e "$APP_DIR/current" ] && [ ! -d "$APP_DIR/current" ]; then
+              echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 후 디렉터리 생성."
+              rm -f "$APP_DIR/current"
             fi
-
-            # current 디렉터리 생성
-            if [ ! -d "$CURRENT_DIR" ]; then
-              echo "current 디렉터리 생성: $CURRENT_DIR"
-              mkdir -p "$CURRENT_DIR"
-            else
-              echo "current 디렉터리 이미 존재: $CURRENT_DIR"
-            fi
+            mkdir -p "$APP_DIR/current"
 
             # 기존 WebApp 디렉터리 삭제 및 새로 생성
             if [ -d "$WEBAPP_DIR" ]; then
@@ -104,22 +100,30 @@ jobs:
             mkdir -p "$WEBAPP_DIR"
 
             # JAR 파일 확인 및 이동
-            if [ ! -f "$TOBE_DIR/webapp.jar" ]; then
-              echo "webapp.jar 파일이 없습니다!"
+            if [ ! -f "$TOBE_DIR/$JAR_FILE" ]; then
+              echo "$JAR_FILE 파일이 없습니다!"
               exit 1
             fi
-            mv "$TOBE_DIR/webapp.jar" "$WEBAPP_DIR/webapp.jar"
-
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBAPP_DIR/$JAR_FILE"
             echo "==== WebApp 파일 이동 완료 ===="
-            ls -l "$WEBAPP_DIR"
 
             # 기존 프로세스 종료 및 새로운 WebApp 실행
             echo "8080 포트의 기존 프로세스 종료 중..."
             sudo fuser -k -n tcp 8080 || true
 
             echo "WebApp 실행 시작..."
-            nohup java -jar "$WEBAPP_DIR/webapp.jar" > "$WEBAPP_DIR/webapp.log" 2>&1 &
-            echo "WebApp 배포 완료"
+            nohup java -jar "$WEBAPP_DIR/$JAR_FILE" > "$WEBAPP_DIR/webapp.log" 2>&1 &
+            echo "==== WebApp 배포 완료 ===="
+
+      # WebServer 배포 (EC2 #2)
+      - name: EC2 WebServer에 파일 전송 (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          source: webserver.jar
+          target: /home/ubuntu/hottoke_BE/tobe
 
       - name: EC2 WebServer 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
@@ -129,25 +133,19 @@ jobs:
           key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           script_stop: true
           script: |
-            WEBSERVER_DIR="/home/ubuntu/hottoke_BE/current/webserver"
-            CURRENT_DIR="/home/ubuntu/hottoke_BE/current"
-            TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
+            APP_DIR="/home/ubuntu/hottoke_BE"
+            WEBSERVER_DIR="$APP_DIR/current/webserver"
+            TOBE_DIR="$APP_DIR/tobe"
+            JAR_FILE="webserver.jar"
 
             echo "==== WebServer 배포 시작 ===="
 
-            # current가 파일인지 확인하고 처리
-            if [ -e "$CURRENT_DIR" ] && [ ! -d "$CURRENT_DIR" ]; then
-              echo "경로 $CURRENT_DIR 는 파일로 존재합니다. 삭제 후 디렉터리 생성."
-              rm -f "$CURRENT_DIR"
+            # current 디렉터리 준비
+            if [ -e "$APP_DIR/current" ] && [ ! -d "$APP_DIR/current" ]; then
+              echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 후 디렉터리 생성."
+              rm -f "$APP_DIR/current"
             fi
-
-            # current 디렉터리 생성
-            if [ ! -d "$CURRENT_DIR" ]; then
-              echo "current 디렉터리 생성: $CURRENT_DIR"
-              mkdir -p "$CURRENT_DIR"
-            else
-              echo "current 디렉터리 이미 존재: $CURRENT_DIR"
-            fi
+            mkdir -p "$APP_DIR/current"
 
             # 기존 WebServer 디렉터리 삭제 및 새로 생성
             if [ -d "$WEBSERVER_DIR" ]; then
@@ -157,19 +155,17 @@ jobs:
             mkdir -p "$WEBSERVER_DIR"
 
             # JAR 파일 확인 및 이동
-            if [ ! -f "$TOBE_DIR/webserver.jar" ]; then
-              echo "webserver.jar 파일이 없습니다!"
+            if [ ! -f "$TOBE_DIR/$JAR_FILE" ]; then
+              echo "$JAR_FILE 파일이 없습니다!"
               exit 1
             fi
-            mv "$TOBE_DIR/webserver.jar" "$WEBSERVER_DIR/webserver.jar"
-
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBSERVER_DIR/$JAR_FILE"
             echo "==== WebServer 파일 이동 완료 ===="
-            ls -l "$WEBSERVER_DIR"
 
             # 기존 프로세스 종료 및 새로운 WebServer 실행
             echo "8081 포트의 기존 프로세스 종료 중..."
             sudo fuser -k -n tcp 8081 || true
 
             echo "WebServer 실행 시작..."
-            nohup java -jar "$WEBSERVER_DIR/webserver.jar" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
-            echo "WebServer 배포 완료"
+            nohup java -jar "$WEBSERVER_DIR/$JAR_FILE" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
+            echo "==== WebServer 배포 완료 ===="
