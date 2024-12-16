@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Getter
 public class KnockKnockDTO {
-    private Long receiverId; // Receiver의 ID만 받음
+    private String unitNumber; // Receiver의 ID만 받음
     private String content;
     private String tag;
     private Boolean anonymity;

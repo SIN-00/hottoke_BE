@@ -34,30 +34,38 @@ public class KnockKnockController {
     private final KnockKnockService knockKnockService;
 
     @PostMapping("/post")
-    public ResponseEntity<Map<String, String>> knockPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody KnockKnock knockKnockRequest) {
+    public ResponseEntity<Map<String, String>> knockPost(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody KnockKnockDTO knockKnockRequest) {
+        // Sender 정보 가져오기
         String loginId = userDetails.getUser().getLoginId();
         User sender = userRepository.findByLoginId(loginId);
 
-        System.out.println("senderId"+sender.getId());
-        System.out.println("receiverId"+knockKnockRequest.getReceiverId());
-        // Receiver 유효성 확인
-        User receiver = userRepository.findById(knockKnockRequest.getReceiverId())
-                .orElse(null);
-
-        if (receiver == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid receiver ID"));
+        if (sender == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Sender not found"));
         }
 
-        Optional<HouseUserMapping> userMapping = houseUserMappingRepository.findByUser(sender);
-        if (userMapping.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        // Receiver 유효성 확인 (unitNumber를 통해 찾기)
+        String unitNumber = knockKnockRequest.getUnitNumber();
+        Optional<User> receiverOptional = houseUserMappingRepository.findUserByUnitNumber(unitNumber);
+
+        if (receiverOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid unit number: receiver not found"));
         }
+        User receiver = receiverOptional.get();
+
+        // Sender의 HouseUserMapping 확인
+        Optional<HouseUserMapping> userMappingOptional = houseUserMappingRepository.findByUser(sender);
+        if (userMappingOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "HouseUserMapping not found for sender"));
+        }
+        HouseUserMapping houseUserMapping = userMappingOptional.get();
 
         // KnockKnock 객체 생성
         KnockKnock knockKnock = KnockKnock.builder()
                 .receiverId(receiver.getId())
                 .senderId(sender.getId())
-                .houseUserMapping(userMapping.get()) // Sender의 House 설정
+                .houseUserMapping(houseUserMapping)
                 .content(knockKnockRequest.getContent())
                 .tag(knockKnockRequest.getTag())
                 .anonymity(knockKnockRequest.getAnonymity())
@@ -68,11 +76,13 @@ public class KnockKnockController {
         // KnockKnock 저장
         knockKnockRepository.save(knockKnock);
 
-        // 응답 반환
+        // 성공 응답 반환
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
+        response.put("message", "KnockKnock created successfully");
         return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/post-send")
     public ResponseEntity<Map<Long, Map<String, Object>>> getKnockList(@AuthenticationPrincipal CustomUserDetails userDetails) {

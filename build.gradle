@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id 'application'
 }
 
 group = 'hotketok'
@@ -19,58 +18,66 @@ repositories {
 }
 
 dependencies {
-	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-	// Jakarta Validation (이미 설정되어 있지만 재확인)
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
-
-	// 기타 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// DB (MySQL) 설정
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// JWT 관련 라이브러리
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// 테스트
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//유저에 조건 추가하기
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// WebApp용 JAR 생성 (커스텀 JAR 태스크)
-task jarWebApp(type: Jar) {
-	group = 'build'
-	description = 'Build JAR for WebAppApplication'
-	archiveBaseName.set('webapp')
-	from sourceSets.main.output
-	manifest {
-		attributes 'Main-Class': 'hotketok.hotketok_server.WebAppApplication'
-	}
-	destinationDirectory.set(layout.buildDirectory.dir("libs/webapp"))
+task runWebApp(type: JavaExec) {
+	group = "application"
+	description = "Run WebApp server on port 8080"
+	mainClass = 'hotketok.hotketok_server.WebAppApplication'
+	classpath = sourceSets.main.runtimeClasspath
 }
 
-// WebServer용 JAR 생성 (커스텀 JAR 태스크)
-task jarWebServer(type: Jar) {
-	group = 'build'
-	description = 'Build JAR for WebServerApplication'
-	archiveBaseName.set('webserver')
-	from sourceSets.main.output
-	manifest {
-		attributes 'Main-Class': 'hotketok.hotketok_server.WebServerApplication'
-	}
-	destinationDirectory.set(layout.buildDirectory.dir("libs/webserver"))
-}
-
-application {
+task runWeb(type: JavaExec) {
+	group = "application"
+	description = "Run Web server on port 8081"
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
+	classpath = sourceSets.main.runtimeClasspath
+
+}
+task runHotketokServer(type: JavaExec) {
+	group = "application"
+	description = "Run HotketokServerApplication"
+	mainClass = 'hotketok.hotketok_server.HotketokServerApplication'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+task runBoth {
+	group = "application"
+	description = "Run both WebApp and Web servers concurrently"
+	dependsOn = ['runWebApp', 'runWeb']
+
+	doLast {
+		// Run both tasks in parallel
+		exec {
+			commandLine 'bash', '-c', './gradlew runWebApp & ./gradlew runWeb'
+		}
+	}
 }

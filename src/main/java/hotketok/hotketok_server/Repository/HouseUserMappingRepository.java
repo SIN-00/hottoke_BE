@@ -16,4 +16,6 @@ public interface HouseUserMappingRepository extends JpaRepository<HouseUserMappi
 
     List<HouseUserMapping> findAllByHouse(House house);
 
+    Optional<User> findUserByUnitNumber(String unitNumber);
+
 }
