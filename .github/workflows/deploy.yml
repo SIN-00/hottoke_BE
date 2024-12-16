@@ -27,8 +27,12 @@ jobs:
           ./gradlew clean bootJarWebServer &
           wait
 
-      - name: 빌드 산출물 확인
-        run: ls -l ./build/libs/
+      - name: 빌드 결과 확인
+        run: |
+          echo "WebApp 빌드 파일:"
+          ls -l ./build/libs/webapp/
+          echo "WebServer 빌드 파일:"
+          ls -l ./build/libs/webserver/
 
       - name: WebApp 빌드 파일 이름 변경
         run: |
