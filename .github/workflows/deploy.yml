@@ -21,68 +21,64 @@ jobs:
       - name: application-jelly.properties 생성
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application-jelly.properties
 
-      # EC2 #1 무중단 배포 (WebApp)
-      - name: EC2 #1에 무중단 배포 (Gradle runWebApp 실행)
+      - name: Gradle 빌드 (WebApp & WebServer)
+        run: |
+          ./gradlew clean bootJarWebApp &
+          ./gradlew clean bootJarWebServer &
+          wait
+
+      - name: WebApp 빌드 파일 이름 변경
+        run: mv ./build/libs/*WebApp*.jar ./webapp.jar
+
+      - name: WebServer 빌드 파일 이름 변경
+        run: mv ./build/libs/*WebServer*.jar ./webserver.jar
+
+      # WebApp 배포 (EC2 #1)
+      - name: EC2 WebApp에 파일 전송 (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_WEBAPP_HOST }}
+          username: ${{ secrets.EC2_WEBAPP_USERNAME }}
+          key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
+          source: webapp.jar
+          target: /home/ubuntu/Salary_BE/tobe
+
+      - name: EC2 WebApp 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_1_HOST }}
-          username: ${{ secrets.EC2_1_USERNAME }}
-          key: ${{ secrets.EC2_1_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_WEBAPP_HOST }}
+          username: ${{ secrets.EC2_WEBAPP_USERNAME }}
+          key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            DEPLOY_DIR="/home/ubuntu/hottoke_BE"
-            GREEN_DIR="$DEPLOY_DIR/green"
-            BLUE_DIR="$DEPLOY_DIR/blue"
-
-            # 기존 실행 종료 (포트 8080 사용 중지)
+            rm -rf /home/ubuntu/Salary_BE/current/webapp
+            mkdir -p /home/ubuntu/Salary_BE/current/webapp
+            mv /home/ubuntu/Salary_BE/tobe/webapp.jar /home/ubuntu/Salary_BE/current/webapp/webapp.jar
+            cd /home/ubuntu/Salary_BE/current/webapp
             sudo fuser -k -n tcp 8080 || true
+            nohup java -jar webapp.jar > ./webapp.log 2>&1 &
 
-            # Green 디렉터리 초기화 및 복사
-            mkdir -p $GREEN_DIR
-            rsync -av --delete --exclude="green" --exclude="blue" $DEPLOY_DIR/ $GREEN_DIR/
+      # WebServer 배포 (EC2 #2)
+      - name: EC2 WebServer에 파일 전송 (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          source: webserver.jar
+          target: /home/ubuntu/Salary_BE/tobe
 
-            # Gradle runWebApp 실행
-            cd $GREEN_DIR
-            nohup ./gradlew runWebApp > $GREEN_DIR/webapp.log 2>&1 &
-
-            # 심볼릭 링크로 트래픽 전환
-            ln -sfn $GREEN_DIR $DEPLOY_DIR/current
-
-            # 기존 Blue 디렉터리 정리
-            if [ -d "$BLUE_DIR" ]; then
-              rm -rf $BLUE_DIR
-            fi
-            mv $GREEN_DIR $BLUE_DIR  # Green -> Blue 역할 전환
-
-      # EC2 #2 무중단 배포 (Web)
-      - name: EC2 #2에 무중단 배포 (Gradle runWeb 실행)
+      - name: EC2 WebServer 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_2_HOST }}
-          username: ${{ secrets.EC2_2_USERNAME }}
-          key: ${{ secrets.EC2_2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           script_stop: true
           script: |
-            DEPLOY_DIR="/home/ubuntu/hottoke_BE"
-            GREEN_DIR="$DEPLOY_DIR/green"
-            BLUE_DIR="$DEPLOY_DIR/blue"
-
-            # 기존 실행 종료 (포트 8081 사용 중지)
+            rm -rf /home/ubuntu/Salary_BE/current/webserver
+            mkdir -p /home/ubuntu/Salary_BE/current/webserver
+            mv /home/ubuntu/Salary_BE/tobe/webserver.jar /home/ubuntu/Salary_BE/current/webserver/webserver.jar
+            cd /home/ubuntu/Salary_BE/current/webserver
             sudo fuser -k -n tcp 8081 || true
-
-            # Green 디렉터리 초기화 및 복사
-            mkdir -p $GREEN_DIR
-            rsync -av --delete --exclude="green" --exclude="blue" $DEPLOY_DIR/ $GREEN_DIR/
-
-            # Gradle runWeb 실행
-            cd $GREEN_DIR
-            nohup ./gradlew runWeb > $GREEN_DIR/webserver.log 2>&1 &
-
-            # 심볼릭 링크로 트래픽 전환
-            ln -sfn $GREEN_DIR $DEPLOY_DIR/current
-
-            # 기존 Blue 디렉터리 정리
-            if [ -d "$BLUE_DIR" ]; then
-              rm -rf $BLUE_DIR
-            fi
-            mv $GREEN_DIR $BLUE_DIR  # Green -> Blue 역할 전환
+            nohup java -jar webserver.jar > ./webserver.log 2>&1 &
