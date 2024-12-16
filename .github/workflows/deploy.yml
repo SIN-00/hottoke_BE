@@ -73,7 +73,7 @@ jobs:
       - name: EC2에 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2__WEBAPP_HOST }}
+          host: ${{ secrets.EC2_WEBAPP_HOST }}
           username: ${{ secrets.EC2_WEBAPP_USERNAME }}
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
@@ -84,7 +84,7 @@ jobs:
             cd /home/ubuntu/hottoke_BE/current
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar project.jar > ./output.log 2>&1 &
-            rm -rf /home/ubuntu/Salary_BE/tobe
+            rm -rf /home/ubuntu/hottoke_BE/tobe
 
       # WebServer 배포 (EC2 #2)
       - name: EC2 WebServer에 파일 전송 및 배포
