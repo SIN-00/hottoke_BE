@@ -47,37 +47,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-task runWebApp(type: JavaExec) {
-	group = "application"
-	description = "Run WebApp server on port 8080"
-	mainClass = 'hotketok.hotketok_server.WebAppApplication'
-	classpath = sourceSets.main.runtimeClasspath
-}
-
-task runWeb(type: JavaExec) {
-	group = "application"
-	description = "Run Web server on port 8081"
-	mainClass = 'hotketok.hotketok_server.WebServerApplication'
-	classpath = sourceSets.main.runtimeClasspath
-
-}
-task runHotketokServer(type: JavaExec) {
-	group = "application"
-	description = "Run HotketokServerApplication"
-	mainClass = 'hotketok.hotketok_server.HotketokServerApplication'
-	classpath = sourceSets.main.runtimeClasspath
-}
-
-task runBoth {
-	group = "application"
-	description = "Run both WebApp and Web servers concurrently"
-	dependsOn = ['runWebApp', 'runWeb']
-
-	doLast {
-		// Run both tasks in parallel
-		exec {
-			commandLine 'bash', '-c', './gradlew runWebApp & ./gradlew runWeb'
-		}
-	}
-}
