@@ -52,10 +52,12 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
         String address = houseUserMapping.getHouse().getHouseAddress();
+        String unitNumber = houseUserMapping.getUnitNumber();
 
         // JSON 형태로 응답하기 위해 Map을 사용
         Map<String, String> response = new HashMap<>();
         response.put("address", address);
+        response.put("unitNumber", unitNumber);
 
         return ResponseEntity.ok(response);
     }
