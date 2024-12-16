@@ -12,7 +12,7 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
-	targetCompatibility = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -25,23 +25,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	// DB (MySQL) 설정
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
-
-	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
-	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-	// 유저에 조건 추가하기
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
 }
@@ -50,22 +40,20 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// WebAppApplication용 JAR 생성
+// WebApp JAR 생성 태스크
 task bootJarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
 	group = 'build'
 	description = 'Build BootJar for WebAppApplication'
 	archiveBaseName.set('webapp')
 	mainClass.set('hotketok.hotketok_server.WebAppApplication')
-	targetJavaVersion = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
 }
 
-// WebServerApplication용 JAR 생성
+// WebServer JAR 생성 태스크
 task bootJarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
 	group = 'build'
 	description = 'Build BootJar for WebServerApplication'
 	archiveBaseName.set('webserver')
 	mainClass.set('hotketok.hotketok_server.WebServerApplication')
-	targetJavaVersion = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
 }
 
 // 기본 bootJar 태스크 비활성화
@@ -88,16 +76,7 @@ task runWeb(type: JavaExec) {
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
 }
+
 application {
-	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
-}
-
-task bootJarWebApp(type: Jar) {
-	archiveBaseName.set("webapp")
-	dependsOn bootJar
-}
-
-task bootJarWebServer(type: Jar) {
-	archiveBaseName.set("webserver")
-	dependsOn bootJar
+	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 }
