@@ -85,12 +85,19 @@ jobs:
 
             echo "==== WebApp 배포 시작 ===="
 
-            # current 디렉터리 준비
+            # current 경로가 파일인지 디렉터리인지 확인
             if [ -e "$APP_DIR/current" ] && [ ! -d "$APP_DIR/current" ]; then
-              echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 후 디렉터리 생성."
+              echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 중..."
               rm -f "$APP_DIR/current"
             fi
-            mkdir -p "$APP_DIR/current"
+
+            # current 디렉터리 준비
+            if [ ! -d "$APP_DIR/current" ]; then
+              echo "current 디렉터리 생성: $APP_DIR/current"
+              mkdir -p "$APP_DIR/current"
+            else
+              echo "current 디렉터리 이미 존재: $APP_DIR/current"
+            fi
 
             # 기존 WebApp 디렉터리 삭제 및 새로 생성
             if [ -d "$WEBAPP_DIR" ]; then
