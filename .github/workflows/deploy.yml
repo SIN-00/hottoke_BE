@@ -9,23 +9,28 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
+      # GitHub 저장소에서 파일 불러오기
       - name: GitHub Repository 파일 불러오기
         uses: actions/checkout@v4
 
+      # JDK 17 설치
       - name: JDK 17 설치
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
+      # application-jelly.properties 파일 생성
       - name: application-jelly.properties 생성
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application-jelly.properties
 
+      # Gradle 빌드 (WebApp 및 WebServer)
       - name: Gradle 빌드 (WebApp & WebServer)
         run: |
           ./gradlew jarWebApp
           ./gradlew jarWebServer
 
+      # 빌드 파일 검증 및 확인
       - name: 빌드 파일 확인
         run: |
           echo "WebApp 빌드 파일:"
@@ -33,23 +38,25 @@ jobs:
           echo "WebServer 빌드 파일:"
           ls -l ./build/libs/webserver/
 
+      # WebApp 빌드 파일 이름 변경
       - name: WebApp 빌드 파일 이름 변경
         run: |
-            if ls ./build/libs/webapp/webapp-*.jar 1> /dev/null 2>&1; then
-              mv ./build/libs/webapp/webapp-*.jar ./webapp.jar
-            else
+          WEBAPP_FILE=$(ls ./build/libs/webapp/webapp-*.jar 2>/dev/null || echo "")
+          if [ -z "$WEBAPP_FILE" ]; then
             echo "webapp JAR 파일이 없습니다."
             exit 1
-            fi
+          fi
+          mv $WEBAPP_FILE ./webapp.jar
 
+      # WebServer 빌드 파일 이름 변경
       - name: WebServer 빌드 파일 이름 변경
         run: |
-            if ls ./build/libs/webserver/webserver-*.jar 1> /dev/null 2>&1; then
-              mv ./build/libs/webserver/webserver-*.jar ./webserver.jar
-            else
+          WEBSERVER_FILE=$(ls ./build/libs/webserver/webserver-*.jar 2>/dev/null || echo "")
+          if [ -z "$WEBSERVER_FILE" ]; then
             echo "webserver JAR 파일이 없습니다."
             exit 1
-            fi
+          fi
+          mv $WEBSERVER_FILE ./webserver.jar
 
       # WebApp 배포 (EC2 #1)
       - name: EC2 WebApp에 파일 전송 (SCP)
@@ -69,12 +76,18 @@ jobs:
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/hottoke_BE/current/webapp
-            mkdir -p /home/ubuntu/hottoke_BE/current/webapp
-            mv /home/ubuntu/hottoke_BE/tobe/webapp.jar /home/ubuntu/hottoke_BE/current/webapp/webapp.jar
-            cd /home/ubuntu/hottoke_BE/current/webapp
+            WEBAPP_DIR="/home/ubuntu/hottoke_BE/current/webapp"
+            TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
+
+            mkdir -p $WEBAPP_DIR
+            if [ ! -f "$TOBE_DIR/webapp.jar" ]; then
+              echo "webapp.jar 파일이 없습니다!"
+              exit 1
+            fi
+
+            mv $TOBE_DIR/webapp.jar $WEBAPP_DIR/webapp.jar
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar webapp.jar > ./webapp.log 2>&1 &
+            nohup java -jar $WEBAPP_DIR/webapp.jar > $WEBAPP_DIR/webapp.log 2>&1 &
 
       # WebServer 배포 (EC2 #2)
       - name: EC2 WebServer에 파일 전송 (SCP)
@@ -94,9 +107,15 @@ jobs:
           key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/hottoke_BE/current/webserver
-            mkdir -p /home/ubuntu/hottoke_BE/current/webserver
-            mv /home/ubuntu/hottoke_BE/tobe/webserver.jar /home/ubuntu/hottoke_BE/current/webserver/webserver.jar
-            cd /home/ubuntu/hottoke_BE/current/webserver
+            WEBSERVER_DIR="/home/ubuntu/hottoke_BE/current/webserver"
+            TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
+
+            mkdir -p $WEBSERVER_DIR
+            if [ ! -f "$TOBE_DIR/webserver.jar" ]; then
+              echo "webserver.jar 파일이 없습니다!"
+              exit 1
+            fi
+
+            mv $TOBE_DIR/webserver.jar $WEBSERVER_DIR/webserver.jar
             sudo fuser -k -n tcp 8081 || true
-            nohup java -jar webserver.jar > ./webserver.log 2>&1 &
+            nohup java -jar $WEBSERVER_DIR/webserver.jar > $WEBSERVER_DIR/webserver.log 2>&1 &
