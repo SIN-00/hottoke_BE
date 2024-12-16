@@ -30,13 +30,13 @@ jobs:
           ./gradlew jarWebApp
           ./gradlew jarWebServer
 
-      # 빌드 파일 검증 및 확인
+      # 빌드 파일 확인 및 로그 출력
       - name: 빌드 파일 확인
         run: |
           echo "WebApp 빌드 파일:"
-          ls -l ./build/libs/webapp/
+          ls -l ./build/libs/webapp/ || echo "WebApp 디렉터리가 없습니다."
           echo "WebServer 빌드 파일:"
-          ls -l ./build/libs/webserver/
+          ls -l ./build/libs/webserver/ || echo "WebServer 디렉터리가 없습니다."
 
       # WebApp 빌드 파일 이름 변경
       - name: WebApp 빌드 파일 이름 변경
@@ -66,7 +66,7 @@ jobs:
           username: ${{ secrets.EC2_WEBAPP_USERNAME }}
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           source: webapp.jar
-          target: /home/ubuntu/hottoke_BE/tobe
+          target: /home/ubuntu/hottoke_BE/tobe/
 
       - name: EC2 WebApp 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
@@ -79,22 +79,22 @@ jobs:
             WEBAPP_DIR="/home/ubuntu/hottoke_BE/current/webapp"
             TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
 
-            # 기존 WebApp 디렉터리 삭제 및 새로 생성
+            echo "WebApp 배포 시작"
             if [ -d "$WEBAPP_DIR" ]; then
+              echo "기존 WebApp 디렉터리 삭제: $WEBAPP_DIR"
               rm -rf $WEBAPP_DIR
             fi
             mkdir -p $WEBAPP_DIR
 
-            # JAR 파일 확인 및 이동
             if [ ! -f "$TOBE_DIR/webapp.jar" ]; then
               echo "webapp.jar 파일이 없습니다!"
               exit 1
             fi
-            mv $TOBE_DIR/webapp.jar $WEBAPP_DIR/webapp.jar
 
-            # 기존 프로세스 종료 및 새로운 WebApp 실행
+            mv $TOBE_DIR/webapp.jar $WEBAPP_DIR/webapp.jar
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar $WEBAPP_DIR/webapp.jar > $WEBAPP_DIR/webapp.log 2>&1 &
+            echo "WebApp 배포 완료"
 
       # WebServer 배포 (EC2 #2)
       - name: EC2 WebServer에 파일 전송 (SCP)
@@ -104,7 +104,7 @@ jobs:
           username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
           key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           source: webserver.jar
-          target: /home/ubuntu/hottoke_BE/tobe
+          target: /home/ubuntu/hottoke_BE/tobe/
 
       - name: EC2 WebServer 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
@@ -117,7 +117,13 @@ jobs:
             WEBSERVER_DIR="/home/ubuntu/hottoke_BE/current/webserver"
             TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
 
+            echo "WebServer 배포 시작"
+            if [ -d "$WEBSERVER_DIR" ]; then
+              echo "기존 WebServer 디렉터리 삭제: $WEBSERVER_DIR"
+              rm -rf $WEBSERVER_DIR
+            fi
             mkdir -p $WEBSERVER_DIR
+
             if [ ! -f "$TOBE_DIR/webserver.jar" ]; then
               echo "webserver.jar 파일이 없습니다!"
               exit 1
@@ -126,3 +132,4 @@ jobs:
             mv $TOBE_DIR/webserver.jar $WEBSERVER_DIR/webserver.jar
             sudo fuser -k -n tcp 8081 || true
             nohup java -jar $WEBSERVER_DIR/webserver.jar > $WEBSERVER_DIR/webserver.log 2>&1 &
+            echo "WebServer 배포 완료"
