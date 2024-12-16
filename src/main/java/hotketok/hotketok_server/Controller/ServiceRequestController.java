@@ -32,22 +32,33 @@ public class ServiceRequestController {
 
     // 요청서 작성
     @PostMapping("/service")
-    public ResponseEntity<Map<String, String>> postServiceRequest(@RequestBody Map<String, Object> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> postServiceRequest(
+            @RequestBody Map<String, Object> requestBody,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        String baseUrl = "https://api.hotketok.store/";
+
+        // 로그인한 유저 정보 확인
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
 
         HouseUserMapping houseUserMapping = houseUserMappingRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저의 매핑 정보를 찾을 수 없습니다."));
 
+        // 요청서 데이터 처리
         String category = (String) requestBody.get("category");
         List<String> requestImages = (List<String>) requestBody.get("request_image");
         String requestDescription = (String) requestBody.get("request_description");
 
-        // requestImage를 JSON으로 직렬화
+        // request_image를 URL로 변환
+        List<String> imageUrls = requestImages.stream()
+                .map(fileName -> baseUrl + fileName) // 파일명에 기본 URL을 추가
+                .toList();
+
+        // 변환된 URL 리스트를 JSON 문자열로 직렬화
         String requestImageJson = null;
         try {
-            requestImageJson = new ObjectMapper().writeValueAsString(requestImages);
+            requestImageJson = new ObjectMapper().writeValueAsString(imageUrls);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize request images", e);
         }
@@ -56,7 +67,7 @@ public class ServiceRequestController {
 
         ServiceRequest serviceRequest = ServiceRequest.builder()
                 .category(category)
-                .requestImage(requestImageJson) // JSON 문자열 저장
+                .requestImage(requestImageJson) // 변환된 JSON 문자열 저장
                 .requestDescription(requestDescription)
                 .houseUserMapping(houseUserMapping)
                 .createdAt(LocalDateTime.now())
