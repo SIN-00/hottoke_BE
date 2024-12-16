@@ -60,78 +60,60 @@ jobs:
           mv "$WEBSERVER_FILE" ./webserver.jar
           echo "WebServer 빌드 파일 준비 완료: ./webserver.jar"
 
-      # WebApp 및 WebServer 파일 전송 및 배포
-      - name: EC2 배포
+      # WebApp 배포 (EC2 #1)
+      - name: EC2 WebApp에 파일 전송 및 배포
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_WEBAPP_HOST }}
+          username: ${{ secrets.EC2_WEBAPP_USERNAME }}
+          key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            set -x  # 명령 디버깅 활성화
             APP_DIR="/home/ubuntu/hottoke_BE"
+            WEBAPP_DIR="$APP_DIR/current/webapp"
             TOBE_DIR="$APP_DIR/tobe"
+            JAR_FILE="webapp.jar"
 
-            # 재사용 가능한 배포 함수
-            deploy_service() {
-              local SERVICE_NAME=$1
-              local PORT=$2
-              local JAR_FILE="$SERVICE_NAME.jar"
-              local CURRENT_DIR="$APP_DIR/current/$SERVICE_NAME"
+            echo "==== WebApp 배포 시작 ===="
 
-              echo "==== $SERVICE_NAME 배포 시작 ===="
+            # 기존 WebApp 디렉터리 삭제 및 새로 생성
+            rm -rf "$WEBAPP_DIR"
+            mkdir -p "$WEBAPP_DIR"
 
-              # current 디렉터리 준비
-              if [ -e "$APP_DIR/current" ]; then
-                if [ ! -d "$APP_DIR/current" ]; then
-                  echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 중..."
-                  rm -f "$APP_DIR/current" || { echo "파일 삭제 실패: $APP_DIR/current"; exit 1; }
-                else
-                  echo "경로 $APP_DIR/current 는 이미 디렉터리로 존재합니다."
-                fi
-              else
-                echo "경로 $APP_DIR/current 는 존재하지 않습니다. 새로 생성합니다."
-              fi
-              mkdir -p "$APP_DIR/current"
+            # JAR 파일 이동
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBAPP_DIR/$JAR_FILE"
+            echo "WebApp JAR 파일 이동 완료"
 
-              # 기존 서비스 디렉터리 삭제 및 생성
-              if [ -d "$CURRENT_DIR" ]; then
-                echo "기존 $SERVICE_NAME 디렉터리 삭제: $CURRENT_DIR"
-                rm -rf "$CURRENT_DIR" || { echo "$SERVICE_NAME 디렉터리 삭제 실패"; exit 1; }
-              fi
-              mkdir -p "$CURRENT_DIR" || { echo "$SERVICE_NAME 디렉터리 생성 실패"; exit 1; }
-              echo "$SERVICE_NAME 디렉터리 생성 완료: $CURRENT_DIR"
+            # 기존 프로세스 종료 및 새로운 WebApp 실행
+            sudo fuser -k -n tcp 8080 || true
+            nohup java -jar "$WEBAPP_DIR/$JAR_FILE" > "$WEBAPP_DIR/webapp.log" 2>&1 &
+            echo "WebApp 배포 완료"
 
-              # JAR 파일 확인 및 이동
-              if [ ! -f "$TOBE_DIR/$JAR_FILE" ]; then
-                echo "$JAR_FILE 파일이 없습니다!"
-                exit 1
-              fi
-              mv "$TOBE_DIR/$JAR_FILE" "$CURRENT_DIR/$JAR_FILE" || { echo "JAR 파일 이동 실패"; exit 1; }
-              echo "==== $SERVICE_NAME 파일 이동 완료 ===="
+      # WebServer 배포 (EC2 #2)
+      - name: EC2 WebServer에 파일 전송 및 배포
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            APP_DIR="/home/ubuntu/hottoke_BE"
+            WEBSERVER_DIR="$APP_DIR/current/webserver"
+            TOBE_DIR="$APP_DIR/tobe"
+            JAR_FILE="webserver.jar"
 
-              # 기존 프로세스 종료 및 새로운 서비스 실행
-              echo "$PORT 포트의 기존 프로세스 종료 중..."
-              sudo fuser -k -n tcp $PORT || true
+            echo "==== WebServer 배포 시작 ===="
 
-              echo "$SERVICE_NAME 실행 시작..."
-              nohup java -jar "$CURRENT_DIR/$JAR_FILE" > "$CURRENT_DIR/$SERVICE_NAME.log" 2>&1 &
-              echo "==== $SERVICE_NAME 배포 완료 ===="
+            # 기존 WebServer 디렉터리 삭제 및 새로 생성
+            rm -rf "$WEBSERVER_DIR"
+            mkdir -p "$WEBSERVER_DIR"
 
-              # 실행 확인
-              sleep 5
-              if ! pgrep -f "$CURRENT_DIR/$JAR_FILE"; then
-                echo "$SERVICE_NAME 실행 실패"
-                tail -n 50 "$CURRENT_DIR/$SERVICE_NAME.log"
-                exit 1
-              else
-                echo "$SERVICE_NAME 실행 중"
-              fi
-            }
+            # JAR 파일 이동
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBSERVER_DIR/$JAR_FILE"
+            echo "WebServer JAR 파일 이동 완료"
 
-            # WebApp 배포
-            deploy_service "webapp" 8080
-
-            # WebServer 배포
-            deploy_service "webserver" 8081
+            # 기존 프로세스 종료 및 새로운 WebServer 실행
+            sudo fuser -k -n tcp 8081 || true
+            nohup java -jar "$WEBSERVER_DIR/$JAR_FILE" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
+            echo "WebServer 배포 완료"
