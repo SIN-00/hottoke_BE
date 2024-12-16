@@ -124,3 +124,68 @@ jobs:
             echo "WebApp 실행 시작..."
             nohup java -jar "$WEBAPP_DIR/$JAR_FILE" > "$WEBAPP_DIR/webapp.log" 2>&1 &
             echo "==== WebApp 배포 완료 ===="
+
+      # WebServer 배포 (EC2 #2)
+      - name: EC2 WebServer에 파일 전송 (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          source: webserver.jar
+          target: /home/ubuntu/hottoke_BE/tobe
+
+      - name: EC2 WebServer 배포 (SSH)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_WEBSERVER_HOST }}
+          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
+          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            APP_DIR="/home/ubuntu/hottoke_BE"
+            WEBSERVER_DIR="$APP_DIR/current/webserver"
+            TOBE_DIR="$APP_DIR/tobe"
+            JAR_FILE="webserver.jar"
+
+            echo "==== WebServer 배포 시작 ===="
+
+            # current 경로가 파일인지 확인 및 처리
+            if [ -e "$APP_DIR/current" ]; then
+              if [ ! -d "$APP_DIR/current" ]; then
+                echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 중..."
+                rm -f "$APP_DIR/current"
+              else
+                echo "경로 $APP_DIR/current 는 이미 디렉터리로 존재합니다."
+              fi
+            else
+              echo "경로 $APP_DIR/current 는 존재하지 않습니다. 새로 생성합니다."
+            fi
+
+            # current 디렉터리 생성
+            mkdir -p "$APP_DIR/current"
+            echo "current 디렉터리 준비 완료: $APP_DIR/current"
+
+            # 기존 WebServer 디렉터리 삭제 및 새로 생성
+            if [ -d "$WEBSERVER_DIR" ]; then
+              echo "기존 WebServer 디렉터리 삭제: $WEBSERVER_DIR"
+              rm -rf "$WEBSERVER_DIR"
+            fi
+            mkdir -p "$WEBSERVER_DIR"
+            echo "WebServer 디렉터리 생성 완료: $WEBSERVER_DIR"
+
+            # JAR 파일 확인 및 이동
+            if [ ! -f "$TOBE_DIR/$JAR_FILE" ]; then
+              echo "$JAR_FILE 파일이 없습니다!"
+              exit 1
+            fi
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBSERVER_DIR/$JAR_FILE"
+            echo "==== WebServer 파일 이동 완료 ===="
+
+            # 기존 프로세스 종료 및 새로운 WebServer 실행
+            echo "8081 포트의 기존 프로세스 종료 중..."
+            sudo fuser -k -n tcp 8081 || true
+
+            echo "WebServer 실행 시작..."
+            nohup java -jar "$WEBSERVER_DIR/$JAR_FILE" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
+            echo "==== WebServer 배포 완료 ===="
