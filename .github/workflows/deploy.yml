@@ -80,7 +80,7 @@ jobs:
             CURRENT_DIR="/home/ubuntu/hottoke_BE/current"
             TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
 
-            echo "WebApp 배포 시작"
+            echo "==== WebApp 배포 시작 ===="
 
             # current가 파일인지 확인하고 처리
             if [ -e "$CURRENT_DIR" ] && [ ! -d "$CURRENT_DIR" ]; then
@@ -110,20 +110,16 @@ jobs:
             fi
             mv "$TOBE_DIR/webapp.jar" "$WEBAPP_DIR/webapp.jar"
 
+            echo "==== WebApp 파일 이동 완료 ===="
+            ls -l "$WEBAPP_DIR"
+
             # 기존 프로세스 종료 및 새로운 WebApp 실행
+            echo "8080 포트의 기존 프로세스 종료 중..."
             sudo fuser -k -n tcp 8080 || true
+
+            echo "WebApp 실행 시작..."
             nohup java -jar "$WEBAPP_DIR/webapp.jar" > "$WEBAPP_DIR/webapp.log" 2>&1 &
             echo "WebApp 배포 완료"
-
-      # WebServer 배포 (EC2 #2)
-      - name: EC2 WebServer에 파일 전송 (SCP)
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_WEBSERVER_HOST }}
-          username: ${{ secrets.EC2_WEBSERVER_USERNAME }}
-          key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
-          source: webserver.jar
-          target: /home/ubuntu/hottoke_BE/tobe
 
       - name: EC2 WebServer 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
@@ -137,7 +133,7 @@ jobs:
             CURRENT_DIR="/home/ubuntu/hottoke_BE/current"
             TOBE_DIR="/home/ubuntu/hottoke_BE/tobe"
 
-            echo "WebServer 배포 시작"
+            echo "==== WebServer 배포 시작 ===="
 
             # current가 파일인지 확인하고 처리
             if [ -e "$CURRENT_DIR" ] && [ ! -d "$CURRENT_DIR" ]; then
@@ -167,7 +163,13 @@ jobs:
             fi
             mv "$TOBE_DIR/webserver.jar" "$WEBSERVER_DIR/webserver.jar"
 
+            echo "==== WebServer 파일 이동 완료 ===="
+            ls -l "$WEBSERVER_DIR"
+
             # 기존 프로세스 종료 및 새로운 WebServer 실행
+            echo "8081 포트의 기존 프로세스 종료 중..."
             sudo fuser -k -n tcp 8081 || true
+
+            echo "WebServer 실행 시작..."
             nohup java -jar "$WEBSERVER_DIR/webserver.jar" > "$WEBSERVER_DIR/webserver.log" 2>&1 &
             echo "WebServer 배포 완료"
