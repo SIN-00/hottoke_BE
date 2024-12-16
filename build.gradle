@@ -12,7 +12,7 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
-	targetCompatibility = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
+	//targetCompatibility = JavaVersion.VERSION_17 // 수정: 문자열 대신 JavaVersion 사용
 }
 
 repositories {
