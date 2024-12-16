@@ -73,7 +73,7 @@ tasks.named('bootJar').configure {
 	enabled = false
 }
 // WebAppApplication용 JAR 생성
-task bootJarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+task JarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
 	group = 'build'
 	description = 'Build BootJar for WebAppApplication'
 	archiveBaseName.set('webapp')
@@ -82,7 +82,7 @@ task bootJarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar)
 }
 
 // WebServerApplication용 JAR 생성
-task bootJarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+task JarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
 	group = 'build'
 	description = 'Build BootJar for WebServerApplication'
 	archiveBaseName.set('webserver')
