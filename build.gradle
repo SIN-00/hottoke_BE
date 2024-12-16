@@ -19,12 +19,48 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// WebApp용 JAR 생성 (커스텀 JAR 태스크)
+task jarWebApp(type: Jar) {
+	group = 'build'
+	description = 'Build JAR for WebAppApplication'
+	archiveBaseName.set('webapp')
+	from sourceSets.main.output
+	manifest {
+		attributes 'Main-Class': 'hotketok.hotketok_server.WebAppApplication'
+	}
+	destinationDirectory.set(layout.buildDirectory.dir("libs/webapp"))
+}
+
+// WebServer용 JAR 생성 (커스텀 JAR 태스크)
+task jarWebServer(type: Jar) {
+	group = 'build'
+	description = 'Build JAR for WebServerApplication'
+	archiveBaseName.set('webserver')
+	from sourceSets.main.output
+	manifest {
+		attributes 'Main-Class': 'hotketok.hotketok_server.WebServerApplication'
+	}
+	destinationDirectory.set(layout.buildDirectory.dir("libs/webserver"))
 }
 
 application {
-	mainClass = 'hotketok.hotketok_server.WebServerApplication' // WebServer 기본 애플리케이션 설정
+	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 }
