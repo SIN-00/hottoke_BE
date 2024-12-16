@@ -72,24 +72,24 @@ task bootJarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJ
 tasks.named('bootJar').configure {
 	enabled = false
 }
-
-// WebApp 실행 태스크
-task runWebApp(type: JavaExec) {
-	group = 'application'
-	description = 'Run WebApp server'
-	mainClass = 'hotketok.hotketok_server.WebAppApplication'
-	classpath = sourceSets.main.runtimeClasspath
-	destinationDirectory.set(file("$buildDir/libs/webapp")) // WebApp 전용 디렉터리
+// WebAppApplication용 JAR 생성
+task bootJarWebApp(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+	group = 'build'
+	description = 'Build BootJar for WebAppApplication'
+	archiveBaseName.set('webapp')
+	mainClass.set('hotketok.hotketok_server.WebAppApplication')
+	destinationDirectory.set(layout.buildDirectory.dir("libs/webapp")) // 수정된 경로
 }
 
-// WebServer 실행 태스크
-task runWeb(type: JavaExec) {
-	group = 'application'
-	description = 'Run Web server'
-	mainClass = 'hotketok.hotketok_server.WebServerApplication'
-	classpath = sourceSets.main.runtimeClasspath
-	destinationDirectory.set(file("$buildDir/libs/webserver")) // WebServer 전용 디렉터리
+// WebServerApplication용 JAR 생성
+task bootJarWebServer(type: org.springframework.boot.gradle.tasks.bundling.BootJar) {
+	group = 'build'
+	description = 'Build BootJar for WebServerApplication'
+	archiveBaseName.set('webserver')
+	mainClass.set('hotketok.hotketok_server.WebServerApplication')
+	destinationDirectory.set(layout.buildDirectory.dir("libs/webserver")) // 수정된 경로
 }
+
 application {
 	mainClass = findProperty("mainClass") ?: "hotketok.hotketok_server.WebServerApplication" // 기본값 설정
 }
