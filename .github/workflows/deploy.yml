@@ -78,8 +78,7 @@ jobs:
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            set -x 
-            
+            set -x  # 명령 디버깅 활성화
             APP_DIR="/home/ubuntu/hottoke_BE"
             WEBAPP_DIR="$APP_DIR/current/webapp"
             TOBE_DIR="$APP_DIR/tobe"
@@ -87,11 +86,11 @@ jobs:
 
             echo "==== WebApp 배포 시작 ===="
 
-            # current 경로가 파일인지 확인 및 처리
+            # current 경로 확인 및 처리
             if [ -e "$APP_DIR/current" ]; then
               if [ ! -d "$APP_DIR/current" ]; then
                 echo "경로 $APP_DIR/current 는 파일로 존재합니다. 삭제 중..."
-                rm -f "$APP_DIR/current"
+                rm -f "$APP_DIR/current" || { echo "파일 삭제 실패: $APP_DIR/current"; exit 1; }
               else
                 echo "경로 $APP_DIR/current 는 이미 디렉터리로 존재합니다."
               fi
@@ -100,15 +99,15 @@ jobs:
             fi
 
             # current 디렉터리 생성
-            mkdir -p "$APP_DIR/current"
+            mkdir -p "$APP_DIR/current" || { echo "current 디렉터리 생성 실패"; exit 1; }
             echo "current 디렉터리 준비 완료: $APP_DIR/current"
 
             # 기존 WebApp 디렉터리 삭제 및 새로 생성
             if [ -d "$WEBAPP_DIR" ]; then
               echo "기존 WebApp 디렉터리 삭제: $WEBAPP_DIR"
-              rm -rf "$WEBAPP_DIR"
+              rm -rf "$WEBAPP_DIR" || { echo "WebApp 디렉터리 삭제 실패"; exit 1; }
             fi
-            mkdir -p "$WEBAPP_DIR"
+            mkdir -p "$WEBAPP_DIR" || { echo "WebApp 디렉터리 생성 실패"; exit 1; }
             echo "WebApp 디렉터리 생성 완료: $WEBAPP_DIR"
 
             # JAR 파일 확인 및 이동
@@ -116,7 +115,7 @@ jobs:
               echo "$JAR_FILE 파일이 없습니다!"
               exit 1
             fi
-            mv "$TOBE_DIR/$JAR_FILE" "$WEBAPP_DIR/$JAR_FILE"
+            mv "$TOBE_DIR/$JAR_FILE" "$WEBAPP_DIR/$JAR_FILE" || { echo "JAR 파일 이동 실패"; exit 1; }
             echo "==== WebApp 파일 이동 완료 ===="
 
             # 기존 프로세스 종료 및 새로운 WebApp 실행
@@ -126,6 +125,16 @@ jobs:
             echo "WebApp 실행 시작..."
             nohup java -jar "$WEBAPP_DIR/$JAR_FILE" > "$WEBAPP_DIR/webapp.log" 2>&1 &
             echo "==== WebApp 배포 완료 ===="
+
+            # 실행 확인
+            sleep 5
+            if ! pgrep -f "$WEBAPP_DIR/$JAR_FILE"; then
+              echo "WebApp 실행 실패"
+              tail -n 50 "$WEBAPP_DIR/webapp.log"
+              exit 1
+            else
+              echo "WebApp 실행 중"
+            fi
 
       # WebServer 배포 (EC2 #2)
       - name: EC2 WebServer에 파일 전송 (SCP)
