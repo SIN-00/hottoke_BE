@@ -12,10 +12,7 @@ import hotketok.hotketok_server.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,5 +57,17 @@ public class UserController {
         response.put("unitNumber", unitNumber);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/existId")
+    public String existId(@RequestParam("loginId") String loginId) {
+
+        Boolean isExist = userRepository.existsByLoginId(loginId);
+        if (isExist) {
+            return "이미 존재하는 아이디입니다.";
+        }
+        else{
+            return "성공";
+        }
     }
 }
