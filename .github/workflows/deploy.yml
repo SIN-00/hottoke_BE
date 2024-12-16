@@ -52,14 +52,6 @@ jobs:
             fi
 
       # WebApp 배포 (EC2 #1)
-      - name: EC2 WebApp 배포 디렉터리 생성 (SSH)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_WEBAPP_HOST }}
-          username: ${{ secrets.EC2_WEBAPP_USERNAME }}
-          key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
-          script: mkdir -p /home/ubuntu/hottoke_BE/tobe
-
       - name: EC2 WebApp에 파일 전송 (SCP)
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -67,7 +59,7 @@ jobs:
           username: ${{ secrets.EC2_WEBAPP_USERNAME }}
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           source: webapp.jar
-          target: /home/ubuntu/hottoke_BE/tobe
+          target: /home/ubuntu/Salary_BE/tobe
 
       - name: EC2 WebApp 배포 (SSH)
         uses: appleboy/ssh-action@v1.0.3
@@ -77,10 +69,10 @@ jobs:
           key: ${{ secrets.EC2_WEBAPP_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/hottoke_BE/current/webapp
-            mkdir -p /home/ubuntu/hottoke_BE/current/webapp
-            mv /home/ubuntu/hottoke_BE/tobe/webapp.jar /home/ubuntu/hottoke_BE/current/webapp/webapp.jar
-            cd /home/ubuntu/hottoke_BE/current/webapp
+            rm -rf /home/ubuntu/salary_BE/current/webapp
+            mkdir -p /home/ubuntu/salary_BE/current/webapp
+            mv /home/ubuntu/Salary_BE/tobe/webapp.jar /home/ubuntu/Salary_BE/current/webapp/webapp.jar
+            cd /home/ubuntu/Salary_BE/current/webapp
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar webapp.jar > ./webapp.log 2>&1 &
 
@@ -102,9 +94,9 @@ jobs:
           key: ${{ secrets.EC2_WEBSERVER_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/hottoke_BE/current/webserver
-            mkdir -p /home/ubuntu/hottoke_BE/current/webserver
-            mv /home/ubuntu/hottoke_BE/tobe/webserver.jar /home/ubuntu/hottoke_BE/current/webserver/webserver.jar
-            cd /home/ubuntu/hottoke_BE/current/webserver
+            rm -rf /home/ubuntu/Salary_BE/current/webserver
+            mkdir -p /home/ubuntu/Salary_BE/current/webserver
+            mv /home/ubuntu/Salary_BE/tobe/webserver.jar /home/ubuntu/Salary_BE/current/webserver/webserver.jar
+            cd /home/ubuntu/Salary_BE/current/webserver
             sudo fuser -k -n tcp 8081 || true
             nohup java -jar webserver.jar > ./webserver.log 2>&1 &
