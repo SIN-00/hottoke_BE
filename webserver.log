@@ -1,0 +1,45 @@
+
+> Task :compileJava
+Note: /Users/mongsil/Desktop/CODING/핫케톡/hotketok-BE/src/main/java/hotketok/hotketok_server/Controller/ServiceRequestController.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :processResources
+> Task :classes
+
+> Task :runWeb
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2024-12-17T15:43:00.235+09:00  INFO 17984 --- [web_server] [           main] h.hotketok_server.WebServerApplication   : Starting WebServerApplication using Java 21.0.2 with PID 17984 (/Users/mongsil/Desktop/CODING/핫케톡/hotketok-BE/build/classes/java/main started by mongsil in /Users/mongsil/Desktop/CODING/핫케톡/hotketok-BE)
+2024-12-17T15:43:00.236+09:00  INFO 17984 --- [web_server] [           main] h.hotketok_server.WebServerApplication   : The following 1 profile is active: "web"
+2024-12-17T15:43:00.705+09:00  INFO 17984 --- [web_server] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-12-17T15:43:00.745+09:00  INFO 17984 --- [web_server] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 34 ms. Found 8 JPA repository interfaces.
+2024-12-17T15:43:01.112+09:00  INFO 17984 --- [web_server] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2024-12-17T15:43:01.120+09:00  INFO 17984 --- [web_server] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-12-17T15:43:01.120+09:00  INFO 17984 --- [web_server] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2024-12-17T15:43:01.147+09:00  INFO 17984 --- [web_server] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-12-17T15:43:01.147+09:00  INFO 17984 --- [web_server] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 884 ms
+2024-12-17T15:43:01.215+09:00  INFO 17984 --- [web_server] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-12-17T15:43:01.244+09:00  INFO 17984 --- [web_server] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-12-17T15:43:01.267+09:00  INFO 17984 --- [web_server] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-12-17T15:43:01.400+09:00  INFO 17984 --- [web_server] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-12-17T15:43:01.416+09:00  INFO 17984 --- [web_server] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-12-17T15:43:01.775+09:00  INFO 17984 --- [web_server] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3cf4dec7
+2024-12-17T15:43:01.776+09:00  INFO 17984 --- [web_server] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-12-17T15:43:02.325+09:00  INFO 17984 --- [web_server] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: alter table knock_knock modify column content TEXT not null
+Hibernate: alter table notice modify column content TEXT not null
+2024-12-17T15:43:02.764+09:00  INFO 17984 --- [web_server] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-12-17T15:43:02.949+09:00  INFO 17984 --- [web_server] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-12-17T15:43:03.227+09:00  WARN 17984 --- [web_server] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-12-17T15:43:03.237+09:00  INFO 17984 --- [web_server] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-12-17T15:43:03.406+09:00  WARN 17984 --- [web_server] [           main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-12-17T15:43:03.442+09:00  INFO 17984 --- [web_server] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2024-12-17T15:43:03.447+09:00  INFO 17984 --- [web_server] [           main] h.hotketok_server.WebServerApplication   : Started WebServerApplication in 3.518 seconds (process running for 3.703)
