@@ -60,7 +60,7 @@ task runWeb(type: JavaExec) {
 	description = "Run Web server on port 8081"
 	mainClass = 'hotketok.hotketok_server.WebServerApplication'
 	classpath = sourceSets.main.runtimeClasspath
-
+	args '--spring.profiles.active=web' // 여기서 프로파일 지정
 }
 task runHotketokServer(type: JavaExec) {
 	group = "application"
