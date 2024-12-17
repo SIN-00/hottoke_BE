@@ -6,6 +6,7 @@ import hotketok.hotketok_server.Repository.ServiceRequestRepository;
 import hotketok.hotketok_server.Repository.VendorRequestMappingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class VendorWebService {
     }
 
     // 진행 중인 수리 조회
+    @Transactional
     public List<Map<String, Object>> getProgressingService() {
 
         // 공사업체 ID와 status로 매핑 데이터 조회
@@ -107,6 +109,11 @@ public class VendorWebService {
                 .build();
 
         vendorRequestMappingRepository.save(vendorRequestMapping);
+
+        // 요청서 상태 변경
+        serviceRequest.setStatus(1);
+        System.out.println(serviceRequest.getRequestId());
+        serviceRequestRepository.save(serviceRequest);
 
         return "success";
     }
