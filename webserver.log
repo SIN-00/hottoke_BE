@@ -43,3 +43,7 @@ Hibernate: alter table notice modify column content TEXT not null
 2024-12-17T15:43:03.406+09:00  WARN 17984 --- [web_server] [           main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
 2024-12-17T15:43:03.442+09:00  INFO 17984 --- [web_server] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
 2024-12-17T15:43:03.447+09:00  INFO 17984 --- [web_server] [           main] h.hotketok_server.WebServerApplication   : Started WebServerApplication in 3.518 seconds (process running for 3.703)
+2024-12-17T17:33:58.018+09:00  WARN 17984 --- [web_server] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m54s779ms).
+2024-12-17T17:53:25.615+09:00  WARN 17984 --- [web_server] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m57s566ms).
+2024-12-17T18:10:47.625+09:00  WARN 17984 --- [web_server] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m51s998ms).
+2024-12-17T18:18:10.553+09:00  WARN 17984 --- [web_server] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m22s875ms).
