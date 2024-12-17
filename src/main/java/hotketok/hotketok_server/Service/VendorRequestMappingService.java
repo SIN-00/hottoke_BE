@@ -49,14 +49,16 @@ public class VendorRequestMappingService {
     }
 
     // 견적서 선택
-    public String selectEstimate(Long requestId) {
+    public String selectEstimate(Long requestId, Long estimateId) {
 
         // ServiceRequest 조회
         ServiceRequest serviceRequest = serviceRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 요청서를 찾을 수 없습니다."));
 
         serviceRequest.setStatus(2); // 업체 매칭으로 변경
-        // 로직 추가되면 밑에 기능 추가
+
+        VendorRequestMapping vendorRequestMapping = vendorRequestMappingRepository.findByVendorRequestMappingId(estimateId);
+        vendorRequestMapping.setStatus(1);
 
         return "success";
     }

@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
@@ -36,9 +37,12 @@ public class VendorRequestMappingController {
 
     // 견적서 선택
     @PostMapping("/estimate")
-    public ResponseEntity<Map<String, String>> selectEstimate(@RequestParam("estimate_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> selectEstimate(@RequestBody Map<String, Long> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        vendorRequestMappingService.selectEstimate(requestId);
+        Long requestId = requestBody.get("request_id");
+        Long estimateId = requestBody.get("estimate_id");
+
+        vendorRequestMappingService.selectEstimate(requestId, estimateId);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
