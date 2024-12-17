@@ -38,9 +38,6 @@ public class VendorWebController {
     @GetMapping("/vendor/status")
     public ResponseEntity<List<Map<String, Object>>> getProgressingService() {
 
-//        String loginId = userDetails.getUser().getLoginId();
-//        User user = userRepository.findByLoginId(loginId);
-
         List<Map<String, Object>> response = vendorWebService.getProgressingService();
         return ResponseEntity.ok(response);
     }
@@ -48,9 +45,6 @@ public class VendorWebController {
     // 견적서 작성
     @PostMapping("/vendor/estimate")
     public ResponseEntity<Map<String, String>> postEstimate(@RequestBody Map<String, Object> requestBody) {
-
-//        String loginId = userDetails.getUser().getLoginId();
-//        User user = userRepository.findByLoginId(loginId);
 
         Long requestId = Long.parseLong(requestBody.get("request_id").toString());
         String estimatePrice = (String) requestBody.get("estimate_price");
