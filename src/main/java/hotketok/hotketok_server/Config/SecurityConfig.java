@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/", "/join", "/search-address", "/vendor/search", "/existId", "/vendor", "/service-request", "/vendor/status", "/vendor/estimate").permitAll() // 인증 없이 접근 가능한 경로
                 .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
+        // 영속성 문제 해결
 
         // JWT 필터 설정
         http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
