@@ -21,7 +21,6 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 ## 👩‍👩‍👧‍👦 팀명 : 오픈소스 3조 (신지환, 신민경, 황선우)
 
-### R&R
 |분야|이름|포지션|
 |:------:|:---:|:---------:|
 |백엔드|신지환|💻서비스 기획,서버 및 개발 담당|
@@ -32,37 +31,68 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 - - -
 
+## 🚨 문제 제기
+<aside>
+  다세대 주택 관리 문제 "주택관리자(반장)과 거주민 사이의 갈등" 
+</aside>
+
+## 문제 상황 1️⃣
+
+- 기존 시공업체 컨택 방법
+  - 문제점: 귀찮은 책임 소재 파악 / 시공업체와 시간 컨택 / 견적서 요청 / 비용 분담
+  - 결과: 불필요하게 많은 시간 소요 / 번거로움이 동반
+
+💡핫케톡의 고장/수리 발생 시 플로우
+  - 해결 방안: 집주인과의 소통 기능 / 수리 요청 기능 / 최소한의 요청 / 빠르고 쉬운 요청
+  - 결과: 각 유적 간의 불필요한 플로우를 최소화
+
+</br>
+
+## 문제 상황 2️⃣
+
+- 입주민 간의 소통
+  - "기타 소리가 너무 시끄어워요", "아이가 살아서 밤시간에는 조금만 주의해주세요.", "찾아가서 말하는 게 부담스러워 !"
+  - "관리자가 필요해!"
+
+💡 핫케톡의 관리사무소의 기능
+  - "기타 소리가 너무 시끄러워요." -> "익명으로 부탁해야겠다!"
+  - "아이가 살아서 밤시간에는 조금만 주의해주세요." -> "메시지는 부담스러우니 태그로 알려야지!"
+  - "화장실 천장에서 위층 물이 흘러요." -> "201호에게 메시지를 보내야겠다!"
+  - "엘리베이터가 안 되는 줄 몰라서 오늘 지각했어요." -> "건물 공지를 확인해야지!
+
+<br />
+<br />
+
+### ✅ 기존 하우징 케어 서비스 문제 제기
+
+<img width="771" alt="스크린샷 2024-12-18 오전 2 57 16" src="https://github.com/user-attachments/assets/b2625016-d199-4638-97b6-7f2559abc302" />
+<br />
+<br />
+
+
 ## 📑 서비스 목적 및 필요성
 
 <aside>
 📌 다세대 주택 거주자들이 가지는 불편함을 간편하고 빠르게 해결하고자 한다.
-
 </aside>
 
-### 목적 :  다세대 주택의 아파트화
+### 🌏 목적 :  다세대 주택의 아파트화
 
 - 다세대 주택은 아파트에 비해 받는 정보의 양이 적습니다.
 - 내가 내고 있는 관리비가 어디에 사용되는 지도 알 수 없어요.
 - 수리를 받을 때도 어떤 곳에서 받아야 하는 지 몰라요.
 - 옆 집이 시끄러우면 얼굴을 붉히며 직접 대면할 수 밖에 없어요.
 
-### 서비스 필요성 : 다세대 주택을 케어하고자 하는 이유
-
-- 내용 추가 필요
-
-<!-- ### 페르소나 설정 :  -->
+### 🙋‍♂️ 페르소나 설정 
 ![Slide 16_9 - 15](https://github.com/user-attachments/assets/c21adee9-8680-4621-8472-26636c854be9)
 
-
-<!-- ### 서비스 핵심 가치 :  -->
-- 사진 추가
-
+### 🤩 서비스 핵심 가치
 ##### ✅ Convenience : 수리요청을 한 번에, 소통도 하나로 </br>
 ##### ✅ Fast : 빠른 진행, 빠른 상황 확인 </br>
 ##### ✅ Interaction : 집주인과 다른 세대와의 간단한 소통 </br>
 
 
-### 💗 핫케톡의 목표
+### 📍 핫케톡의 목표
 
 |핵심 가치|비전|미션|
 |:--:|:--:|:--:|
@@ -72,49 +102,14 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 - - -
 
+<br />
+<br />
+
+<img width="714" alt="스크린샷 2024-12-18 오전 3 10 29" src="https://github.com/user-attachments/assets/b7044fd7-0a54-48ad-9daa-0e90289b05cd" />
 
 <br />
 <br />
 
-
-### 2. 데스크 리서치(1) : 하우징 케어 서비스 시장 조사
-
-### 2-1. 단순 하우징 케어 서비스와의 차이점
-
-- 내용 추가.
-<br />
-<br />
-
-
-💡 OST가 아닌 전혀 다른 장르의 노래를 들어도 영화나, 드라마에 대한 분위기를 상상하는 사람이 많다.
-
-💡 또한, 노래에 대해 자신이 격지 않은 상황에 대한 이야기를 ‘망상’처럼 풀어내는 경향을 보인다.
-
-💡 노래에 대한 특수적인 분위기를 통해 사용자에게 새로운 감정을 불러일으킬 수 있다. 따라서 특정 노래에 대한 분위기나 가사를 통해 느끼는 감정으로 사용자가 자신의 감정을 이해할 수 있도록 유도한다.
-
-💡 노래에 대한 특수적인 분위기와 타인의 기록을 이용해서 사용자는 자신의 감정을 이해할 수 있도록 한다. 
-
-→ “음악 기록 공유”에 대한 필요성
-
-- - -
-
-## 📑 서비스 타겟층 분석
-
-> _음악을 통해 감정과 기억을 환기 시키고자 하는 회고 절정 시기의 1030세대_
-
-
-**초기 타겟층 :**
-
-주 3회 이상, 음악을 듣기 위해 앱 서비스를 사용하고, 노래를 통해 기억을 회상하고 기록하는 앱 서비스를 사용하는 데에 거부감이 없는 MZ세대
-
-**확장 타겟층 :**
-
-주 3회 이상, 음악을 듣기 위해 앱 서비스를 이용하는 사용자
-<br />
-<br />
-
-
-- - -
 ## 📑 핵심 기능 정의
 
 
@@ -124,27 +119,92 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 |기능 이름|액션|내용|
 | --- | --- | --- |
-| 뚝딱 | 글쓰기 기능 | 사용자가 음악과 함께 지역, 사진, 시간대, 그리고 메모를 적어 업로드할 수 있는 기능 |
-| 똑똑 | 푸시 알림 기능 | 추천, 히스토리가 각각 장소 및 시간을 기반으로 추천되어, 이 장소에서 들었던 음악, 시간 등을 알림으로 받을 수 있는 기능 |
-| 관리비 조회 | 지역, 시간, 감정 기반 탐색 기능 | 브링어스 안에는 지도와 시간 탭으로 구성되어, 지도 탭의 경우는 지역별로 많이 재생된 음악을 탐색할 수 있고, 시간 탭은 시간대, 계절별로 많이 재생된 음악을 탐색할 수 있는 기능, 감정 탭은 자신의 감정 태그로 음악을 탐색할 수 있는 기능 |
+| 뚝딱 | 수리 및 시공 영역 | 세입자가 수리 및 시공을 요청하면 업체에서 견적서를 작성, 세입자가 견적서를 선택 후 업체 매칭을 할 수 있는 기능 |
+| 똑똑 | 입주민 소통 영역 | 입주민들과 소통의 문은 열어두고, 불필요한 접촉은 막을 수 있는 기능 |
 
 <br />
 <br />
-## 📑 추후 확장 기능
 
-- 내용 추가
 
-- - -
-## 📑 Business Model 설계
 
-|구성 요소|내용|
-|:--:|:---------------:|
-- 내용 추가
+### 💁 유저관리 GUI
+<img width="911" alt="스크린샷 2024-12-18 오전 3 11 48" src="https://github.com/user-attachments/assets/218e04f2-a57a-4fbf-aa7f-96bd934e4545" />
+<img width="915" alt="스크린샷 2024-12-18 오전 3 19 47" src="https://github.com/user-attachments/assets/31868c45-55b1-4e00-b7a4-3452167022eb" />
+<img width="927" alt="스크린샷 2024-12-18 오전 3 12 26" src="https://github.com/user-attachments/assets/7dc911f9-3c34-45f9-931a-6907353ed840" />
 
-- - -
-
+<br />
+<br />
 
 - - -
+<br />
+<br />
+
+### 🛠️ 뚝딱 - 수리요청서 작성
+<img width="958" alt="스크린샷 2024-12-18 오전 3 14 29" src="https://github.com/user-attachments/assets/d239720b-8980-44a4-a2ca-23e5041cf20f" />
+
+<br />
+
+### 🛠️ 뚝딱 - 진행 중인 수리 확인
+<img width="964" alt="스크린샷 2024-12-18 오전 3 16 58" src="https://github.com/user-attachments/assets/33fcb508-0977-49c6-818d-ce96d4cfad18" />
+
+<br />
+
+### 🛠️ 뚝딱 - 시공업체(Web.ver)
+<img width="793" alt="스크린샷 2024-12-18 오전 3 17 35" src="https://github.com/user-attachments/assets/776d33ed-0df7-421a-98a2-056c3c2e643b" />
+
+<br />
+
+### 🛠️ 뚝딱 - 시공업체가 견적서를 작성했을 때
+<img width="864" alt="스크린샷 2024-12-18 오전 3 18 17" src="https://github.com/user-attachments/assets/1b57b30c-e26a-4521-90ed-f8ef8a19fd5b" />
+<img width="869" alt="스크린샷 2024-12-18 오전 3 18 29" src="https://github.com/user-attachments/assets/29b506ee-305d-4ced-a9c3-4d86a0a08463" />
+
+<br />
+<br />
+
+- - -
+<br />
+
+### 🙏 똑똑 - 프로필 상태 메세지 / 공지사항
+<img width="915" alt="스크린샷 2024-12-18 오전 3 23 25" src="https://github.com/user-attachments/assets/181dc628-4977-4c66-9839-5379de84beaa" />
+
+<br />
+
+### 🙏 똑똑 - 똑똑 박스 GUI
+<img width="945" alt="스크린샷 2024-12-18 오전 3 24 05" src="https://github.com/user-attachments/assets/aa39a837-1069-44e0-9577-e9e23a2b3981" />
+
+<br />
+
+### 🙏 똑똑 쓰기 GUI
+<img width="930" alt="스크린샷 2024-12-18 오전 3 24 37" src="https://github.com/user-attachments/assets/3faf6666-6c58-4938-99e6-896bfc24ae16" />
+
+<br />
+<br />
+
+- - -
+
+<br />
+
+## 🤩 기대효과
+
+
+### 📌 시장 잠재력
+  다세대 주택은 지속적으로 증가하는 주거 유형이다. <br />
+  특히 임대와 관리에 불편함을 겪고 있는 주택 소유자, 세입자, 공사업체가 많아, 이들의 요구를 충족하는 플랫폼에 대한 수요가 매우 크다. <br />
+  핫케톡🔥은 각기 다른 요구를 가지나 사용자들을 하나의 플랫폼으로 연결함으로써 강력한 시장 잠재력을 갖추고 있다.
+<br />
+### 📌 높은 반복 사용성
+  주거 관리와 관련된 기능들은 주기적으로 사용되므로 사용자들은 플랫폼을 지속적으로 이용할 가능성이 높다. <br />
+  특히 세입자와 집주인은 지속적으로 월세 및 관리비를 확인하고, 수리 요청 등의 기능을 사용하게 되며, 공사업체는 견적 입찰 기회를 정기적으로 얻게 된다.
+<br />
+### 📌 다각화 가능성
+  초기에는 기본적인 주거 관리와 수릴 요청 기능을 제공하지만, 향후 다양한 기능이 추가됨에 따라 사용자 편의성을 크게 증대시킬 수 있다. <br />
+  예를 들면, 인테리어 업체의 입찰, 이사 서비스, 폐기물 처리 서비스 등 다양한 기능의 도입 가능성이 열려있다.
+
+<br />
+
+- - -
+<br />
+
 ## 📑 기술 스택
 #### 💻 BackEnd
 ![Java](https://img.shields.io/badge/Java-3776AB?style=flat-square&logo=mysql&logoColor=white)
@@ -157,20 +217,16 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 
 #### 💻 FrontEnd
-![Swift](https://img.shields.io/badge/Swift-F05138?style=flat-square&logo=Swift&logoColor=white)
-![Xcode](https://img.shields.io/badge/Xcode-147EFB.svg?style=flat-square&logo=Xcode&logoColor=white)
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white">
 #### 📡 배포
 <img src="https://img.shields.io/badge/AWS EC2-232F3E?style=flat-square&logo=amazon%20aws&logoColor=white"/> <img src="https://img.shields.io/badge/Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white"/></a>
 #### 👨‍👩‍👧‍👦 협업툴
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=flat-square&logo=github&logoColor=white)
 <img src="https://img.shields.io/badge/Notion-000000?style=flat-square&logo=Notion&logoColor=white"/>
-<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
 </a>
 #### 🎨 Design
 ![Figma](https://img.shields.io/badge/Figma-F24E1E.svg?style=flat-square&logo=Figma&logoColor=white)
 
-<br />
-<br />
 
 ### 📌 기술 스택 선정 이유
 ### Back
@@ -222,8 +278,3 @@ _다세대 주택의 아파트화를 꿈꾼다!_
 
 <br />
 <br />
-
-- - -
-
-## 📑 주요 기능 명세서
-
