@@ -36,7 +36,7 @@ public class VendorRequestMappingController {
 
     // 견적서 선택
     @PostMapping("/estimate")
-    public ResponseEntity<Map<String, String>> selectEstimate(@RequestParam("request_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> selectEstimate(@RequestParam("estimate_id") Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         vendorRequestMappingService.selectEstimate(requestId);
 
