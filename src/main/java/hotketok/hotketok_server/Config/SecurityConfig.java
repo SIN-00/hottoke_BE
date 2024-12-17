@@ -41,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:8080", "https://api.hotketok.store", "http://localhost:5173","http://localhost:5174","https://api.hotketokweb.shop", "https://hotketok.vercel.app/")); // 허용할 Origin
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:8081", "https://api.hotketok.store", "http://localhost:5173","http://localhost:5174","https://api.hotketokweb.shop", "https://hotketok.vercel.app/", "https://hotketokweb.vercel.app/")); // 허용할 Origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "RefreshToken"));
