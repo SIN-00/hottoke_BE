@@ -36,21 +36,21 @@ public class VendorWebController {
 
     // 진행 중인 수리 조회
     @GetMapping("/vendor/status")
-    public ResponseEntity<List<Map<String, Object>>> getProgressingService(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Map<String, Object>>> getProgressingService() {
 
-        String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByLoginId(loginId);
+//        String loginId = userDetails.getUser().getLoginId();
+//        User user = userRepository.findByLoginId(loginId);
 
-        List<Map<String, Object>> response = vendorWebService.getProgressingService(user);
+        List<Map<String, Object>> response = vendorWebService.getProgressingService();
         return ResponseEntity.ok(response);
     }
 
     // 견적서 작성
     @PostMapping("/vendor/estimate")
-    public ResponseEntity<Map<String, String>> postEstimate(@RequestBody Map<String, Object> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> postEstimate(@RequestBody Map<String, Object> requestBody) {
 
-        String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByLoginId(loginId);
+//        String loginId = userDetails.getUser().getLoginId();
+//        User user = userRepository.findByLoginId(loginId);
 
         Long requestId = Long.parseLong(requestBody.get("request_id").toString());
         String estimatePrice = (String) requestBody.get("estimate_price");
@@ -58,7 +58,7 @@ public class VendorWebController {
         String additionalComment = (String) requestBody.get("additional_comment");
 
         // 견적서 작성 처리 로직
-        vendorWebService.postEstimate(requestId, estimatePrice, estimateTime, additionalComment, user);
+        vendorWebService.postEstimate(requestId, estimatePrice, estimateTime, additionalComment);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");

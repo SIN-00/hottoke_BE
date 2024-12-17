@@ -62,7 +62,7 @@ public class SecurityConfig {
 
         // 인증 및 권한 설정
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/join", "/search-address", "/vendor/search", "/existId", "/vendor", "/service-request").permitAll() // 인증 없이 접근 가능한 경로
+                .requestMatchers("/login", "/", "/join", "/search-address", "/vendor/search", "/existId", "/vendor", "/service-request", "/vendor/status/vendor/estimate").permitAll() // 인증 없이 접근 가능한 경로
                 .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 

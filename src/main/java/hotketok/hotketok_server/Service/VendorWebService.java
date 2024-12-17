@@ -51,7 +51,7 @@ public class VendorWebService {
     }
 
     // 진행 중인 수리 조회
-    public List<Map<String, Object>> getProgressingService(User user) {
+    public List<Map<String, Object>> getProgressingService() {
 
         // 공사업체 ID와 status로 매핑 데이터 조회
         List<VendorRequestMapping> mappings = vendorRequestMappingRepository.findByVendorVendorIdAndRequestStatus(1L, 2);
@@ -84,7 +84,7 @@ public class VendorWebService {
     }
 
     // 견적서 작성
-    public String postEstimate(Long requestId, String estimate_price, String estimate_time, String additional_comment, User user) {
+    public String postEstimate(Long requestId, String estimate_price, String estimate_time, String additional_comment) {
 
         // VendorRequestMapping 조회
         ServiceRequest serviceRequest = serviceRequestRepository.findByRequestId(requestId);
